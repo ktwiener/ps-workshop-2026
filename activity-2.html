@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Activity 2 – Modern uses of propensity scores</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-42ed7287b56c5c583e2c2463c9cf4916.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
+<link href="site_libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script type="module" src="site_libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+<link href="site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./activity-1.html">Activities</a></li><li class="breadcrumb-item"><a href="./activity-2.html">Activity 2</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Modern uses of propensity scores</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Example Overview</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Background and Objective</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data_dictionary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Activities</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./activity-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Activity 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./activity-2.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Activity 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./activity-3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Activity 3</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#propensity-score-model" id="toc-propensity-score-model" class="nav-link" data-scroll-target="#propensity-score-model">Propensity score model</a>
+  <ul class="collapse">
+  <li><a href="#propensity-score-diagnostics" id="toc-propensity-score-diagnostics" class="nav-link" data-scroll-target="#propensity-score-diagnostics">Propensity score diagnostics</a></li>
+  </ul></li>
+  <li><a href="#ate-average-treatment-effect" id="toc-ate-average-treatment-effect" class="nav-link" data-scroll-target="#ate-average-treatment-effect">ATE: Average Treatment Effect</a>
+  <ul class="collapse">
+  <li><a href="#calculate-ipt-weights" id="toc-calculate-ipt-weights" class="nav-link" data-scroll-target="#calculate-ipt-weights">Calculate IPT weights</a></li>
+  <li><a href="#balance-after-ipt-weighting" id="toc-balance-after-ipt-weighting" class="nav-link" data-scroll-target="#balance-after-ipt-weighting">Balance after IPT weighting</a></li>
+  <li><a href="#marginal-structural-model-ate" id="toc-marginal-structural-model-ate" class="nav-link" data-scroll-target="#marginal-structural-model-ate">Marginal structural model: ATE</a></li>
+  </ul></li>
+  <li><a href="#att-average-treatment-effect-in-the-treated" id="toc-att-average-treatment-effect-in-the-treated" class="nav-link" data-scroll-target="#att-average-treatment-effect-in-the-treated">ATT: Average Treatment Effect in the Treated</a>
+  <ul class="collapse">
+  <li><a href="#calculate-smr-weights" id="toc-calculate-smr-weights" class="nav-link" data-scroll-target="#calculate-smr-weights">Calculate SMR weights</a></li>
+  <li><a href="#balance-after-smr-weighting" id="toc-balance-after-smr-weighting" class="nav-link" data-scroll-target="#balance-after-smr-weighting">Balance after SMR weighting</a></li>
+  <li><a href="#marginal-structural-model-att" id="toc-marginal-structural-model-att" class="nav-link" data-scroll-target="#marginal-structural-model-att">Marginal structural model: ATT</a></li>
+  </ul></li>
+  <li><a href="#atu-average-treatment-effect-in-the-untreated" id="toc-atu-average-treatment-effect-in-the-untreated" class="nav-link" data-scroll-target="#atu-average-treatment-effect-in-the-untreated">ATU: Average Treatment Effect in the Untreated</a></li>
+  <li><a href="#love-plot-balance-across-weighting-methods" id="toc-love-plot-balance-across-weighting-methods" class="nav-link" data-scroll-target="#love-plot-balance-across-weighting-methods">Love plot: Balance across weighting methods</a></li>
+  <li><a href="#comparing-all-estimates" id="toc-comparing-all-estimates" class="nav-link" data-scroll-target="#comparing-all-estimates">Comparing all estimates</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./activity-1.html">Activities</a></li><li class="breadcrumb-item"><a href="./activity-2.html">Activity 2</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Activity 2</h1>
+<p class="subtitle lead">Propensity Score Estimation and Weighting</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In Activity 2, we estimate the propensity score, construct inverse probability of treatment weights for different estimands, assess balance after weighting, and estimate marginal causal effects.</p>
+<section id="setup" class="level1">
+<h1>Setup</h1>
+<p>Each activity page runs independently. Run the block below to reload the data and reproduce the preprocessing from Activity 1 before continuing.</p>
+<div>
+<div id="webr-1" class="exercise-cell">
+
+</div>
+<script type="webr-1-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoibGlicmFyeShkcGx5cilcbmxpYnJhcnkocHVycnIpXG5saWJyYXJ5KGdncGxvdDIpXG5saWJyYXJ5KGthYmxlRXh0cmEpXG5saWJyYXJ5KHRpZHlyKVxubGlicmFyeShicm9vbSlcbmxpYnJhcnkodGFibGVvbmUpXG5saWJyYXJ5KHN1cnZleSlcbmxpYnJhcnkoc21kKVxuXG5zb3VyY2UoXCJSL21ldGFkYXRhLlJcIilcbnRwYV9kcyA8LSByZWFkUkRTKFwiZGF0YS90cGFfZHMucmRzXCIpXG5cbnRwYV9kcyRhZ2VfNWYgPC0gY3V0KHRwYV9kcyRhZ2UsIGJyZWFrcyA9IHNlcSgxNCwgMTA1LCBieSA9IDUpLCByaWdodCA9IEZBTFNFKVxuXG5leHBvc3VyZSAgICA8LSBcInRwYVwiXG5vdXRjb21lICAgICA8LSBcImRlYXRoXCJcbmNvbmZvdW5kZXJzIDwtIGMoXCJhZ2VcIiwgXCJzZXhcIiwgXCJsaXZpbmdcIiwgXCJjb21vcmJpZFwiLCBcImNhcmRpYWNcIiwgXCJwcmV2c3Ryb2tlXCIsXG4gICAgICAgICAgICAgICAgIFwiaHRuXCIsIFwiaHlwZXJjaG9sXCIsIFwiYWZpYlwiLCBcImFwaGFzaWFcIiwgXCJwYXJlc2lzXzNmXCIsIFwicmFua3ByZVwiLCBcImljdVwiKVxuY29uZl9jYXQgICAgPC0gYyhcImljdVwiLCBcImNvbW9yYmlkXCIsIFwiY2FyZGlhY1wiLCBcInByZXZzdHJva2VcIiwgXCJodG5cIiwgXCJoeXBlcmNob2xcIixcbiAgICAgICAgICAgICAgICAgXCJhZmliXCIsIFwiYXBoYXNpYVwiKVxuXG50cGFfZHNfY2MgPC0gdHBhX2RzIHw+XG4gIGRwbHlyOjpmaWx0ZXIoZHBseXI6OmlmX2FsbChkcGx5cjo6YWxsX29mKGMoZXhwb3N1cmUsIG91dGNvbWUsIGNvbmZvdW5kZXJzKSksIH4haXMubmEoLngpKSlcblxuY2F0KFwiRGF0YSBsb2FkZWQ6XCIsIG5yb3codHBhX2RzX2NjKSwgXCJjb21wbGV0ZSBjYXNlc1xcblwiKSJ9
+</script>
+</div>
+</section>
+<section id="propensity-score-model" class="level1">
+<h1>Propensity score model</h1>
+<p>The propensity score is the probability of receiving t-PA given the observed confounders: <span class="math inline">\(\hat{e}(\mathbf{L}) = \hat{P}[A=1 \mid \mathbf{L}]\)</span>. We estimate it using logistic regression with treatment as the outcome and all confounders as predictors.</p>
+<p>Variable selection should be guided by your causal diagram (DAG). Include confounders (causes of both treatment and outcome) and outcome predictors. Exclude mediators (variables on the causal pathway from treatment to outcome).</p>
+<div>
+<div id="webr-2" class="exercise-cell">
+
+</div>
+<script type="webr-2-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiZXhwZm9ybSA8LSBzcHJpbnRmKFwidHBhIH4gJXNcIiwgcGFzdGUoY29uZm91bmRlcnMsIGNvbGxhcHNlID0gXCIgKyBcIikpXG5cbnBzX21vZGVsIDwtIGdsbShhcy5mb3JtdWxhKGV4cGZvcm0pLCBkYXRhID0gdHBhX2RzX2NjLFxuICAgICAgICAgICAgICAgIGZhbWlseSA9IGJpbm9taWFsKGxpbmsgPSBcImxvZ2l0XCIpKVxuXG4jIyBBZGQgcHJvcGVuc2l0eSBzY29yZSAocHJlZGljdGVkIHByb2JhYmlsaXR5IG9mIHRyZWF0bWVudClcbnRwYV9kc19jYyRwcyA8LSBwcmVkaWN0KHBzX21vZGVsLCB0eXBlID0gXCJyZXNwb25zZVwiKVxuXG4jIyBBZGQgbWFyZ2luYWwgcHJvYmFiaWxpdHkgb2YgdHJlYXRtZW50IChmb3Igc3RhYmlsaXplZCB3ZWlnaHRzKVxudHBhX2RzX2NjJHBhIDwtIHByZWRpY3QoZ2xtKHRwYSB+IDEsIGRhdGEgPSB0cGFfZHNfY2MsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgZmFtaWx5ID0gYmlub21pYWwobGluayA9IFwibG9naXRcIikpLFxuICAgICAgICAgICAgICAgICAgICAgICAgdHlwZSA9IFwicmVzcG9uc2VcIilcblxuY2F0KFwiUHJvcGVuc2l0eSBzY29yZSBzdW1tYXJ5OlxcblwiKVxuc3VtbWFyeSh0cGFfZHNfY2MkcHMpIn0=
+</script>
+</div>
+<section id="propensity-score-diagnostics" class="level2">
+<h2 class="anchored" data-anchor-id="propensity-score-diagnostics">Propensity score diagnostics</h2>
+<p>Examine the propensity score distribution within each treatment group. Large regions of non-overlap (“lack of positivity”) indicate covariate profiles where only treated or only untreated people appear — causal effects cannot be estimated there without extrapolation.</p>
+<div>
+<div id="webr-3" class="exercise-cell">
+
+</div>
+<script type="webr-3-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiY2F0KFwiUHJvcGVuc2l0eSBzY29yZXMgYW1vbmcgdHJlYXRlZCAodFBBID0gMSk6XFxuXCIpXG5zdW1tYXJ5KHRwYV9kc19jYyRwc1t0cGFfZHNfY2MkdHBhID09IDFdKVxuXG5jYXQoXCJcXG5Qcm9wZW5zaXR5IHNjb3JlcyBhbW9uZyB1bnRyZWF0ZWQgKHRQQSA9IDApOlxcblwiKVxuc3VtbWFyeSh0cGFfZHNfY2MkcHNbdHBhX2RzX2NjJHRwYSA9PSAwXSkifQ==
+</script>
+</div>
+<div>
+<div id="webr-4" class="exercise-cell">
+
+</div>
+<script type="webr-4-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiZ2dwbG90KHRwYV9kc19jYywgYWVzKHggPSBwcywgZmlsbCA9IHRwYV9mKSkgK1xuICBnZW9tX2RlbnNpdHkoYWxwaGEgPSAwLjQpICtcbiAgdGhlbWVfbWluaW1hbCgpICtcbiAgbGFicyhcbiAgICB5ID0gXCJEZW5zaXR5XCIsIHggPSBcIlByb3BlbnNpdHkgc2NvcmVcIiwgZmlsbCA9IFwiVHJlYXRtZW50IGdyb3VwXCIsXG4gICAgdGl0bGUgPSBcIlByb3BlbnNpdHkgc2NvcmUgZGlzdHJpYnV0aW9uIGJ5IHRyZWF0bWVudCAodW53ZWlnaHRlZClcIlxuICApIn0=
+</script>
+</div>
+<p>What do you notice about the overlap? Are there regions of the propensity score where one treatment group is barely represented?</p>
+<hr>
+</section>
+</section>
+<section id="ate-average-treatment-effect" class="level1">
+<h1>ATE: Average Treatment Effect</h1>
+<p>The ATE is the effect of treatment in the <em>entire population</em> — had everyone received t-PA vs.&nbsp;had no one received t-PA. We use <strong>inverse probability of treatment (IPT) weights</strong>.</p>
+<p><span class="math display">\[\hat{\omega}_{i,\text{IPT}} = \frac{I(A_i=1)}{\hat{e}(\mathbf{L}_i)} + \frac{I(A_i=0)}{1-\hat{e}(\mathbf{L}_i)}\]</span></p>
+<p><strong>Stabilized weights</strong> scale by the marginal probability of treatment. They have the same mean as 1, produce narrower confidence intervals, and are generally preferred:</p>
+<p><span class="math display">\[\hat{\omega}_{i,\text{sIPT}} = \frac{I(A_i=1)\,\hat{P}(A=1)}{\hat{e}(\mathbf{L}_i)} + \frac{I(A_i=0)\,\hat{P}(A=0)}{1-\hat{e}(\mathbf{L}_i)}\]</span></p>
+<section id="calculate-ipt-weights" class="level2">
+<h2 class="anchored" data-anchor-id="calculate-ipt-weights">Calculate IPT weights</h2>
+<div>
+<div id="webr-5" class="exercise-cell">
+
+</div>
+<script type="webr-5-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiIyMgVW5zdGFiaWxpemVkIElQVCB3ZWlnaHRzXG50cGFfZHNfY2MkaXB0IDwtIHdpdGgodHBhX2RzX2NjLFxuICB0cGEgLyBwcyArICgxIC0gdHBhKSAvICgxIC0gcHMpXG4pXG5cbiMjIFN0YWJpbGl6ZWQgSVBUIHdlaWdodHNcbnRwYV9kc19jYyRzaXB0IDwtIHdpdGgodHBhX2RzX2NjLFxuICB0cGEgKiBwYSAvIHBzICsgKDEgLSB0cGEpICogKDEgLSBwYSkgLyAoMSAtIHBzKVxuKVxuXG5jYXQoXCJVbnN0YWJpbGl6ZWQgSVBUIHdlaWdodCBzdW1tYXJ5OlxcblwiKVxuc3VtbWFyeSh0cGFfZHNfY2MkaXB0KVxuXG5jYXQoXCJcXG5TdGFiaWxpemVkIElQVCB3ZWlnaHQgc3VtbWFyeTpcXG5cIilcbnN1bW1hcnkodHBhX2RzX2NjJHNpcHQpIn0=
+</script>
+</div>
+<p>Extreme weights (very large values) indicate near-positivity violations and can inflate variance. How do the unstabilized and stabilized weight distributions compare?</p>
+</section>
+<section id="balance-after-ipt-weighting" class="level2">
+<h2 class="anchored" data-anchor-id="balance-after-ipt-weighting">Balance after IPT weighting</h2>
+<p>We check covariate balance in the IPT-weighted pseudo-population. The goal is for SMDs to fall below 0.1 for all covariates.</p>
+<div>
+<div id="webr-6" class="exercise-cell">
+
+</div>
+<script type="webr-6-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiZGVzaWduX2lwdCA8LSBzdXJ2ZXk6OnN2eWRlc2lnbihpZCA9IH4xLCB3ZWlnaHRzID0gfmlwdCwgZGF0YSA9IHRwYV9kc19jYylcblxudDFfaXB0IDwtIHRhYmxlb25lOjpzdnlDcmVhdGVUYWJsZU9uZShcbiAgZGF0YSAgICAgICA9IGRlc2lnbl9pcHQsXG4gIHZhcnMgICAgICAgPSBjb25mb3VuZGVycyxcbiAgc3RyYXRhICAgICA9IFwidHBhX2ZcIixcbiAgZmFjdG9yVmFycyA9IGNvbmZfY2F0LFxuICBzbWQgICAgICAgID0gVFJVRSxcbiAgdGVzdCAgICAgICA9IEZBTFNFXG4pXG5cbmthYmxlKHByaW50KHQxX2lwdCwgc21kID0gVFJVRSwgcHJpbnRUb2dnbGUgPSBGQUxTRSwgdmFyTGFiZWxzID0gVFJVRSkpIn0=
+</script>
+</div>
+</section>
+<section id="marginal-structural-model-ate" class="level2">
+<h2 class="anchored" data-anchor-id="marginal-structural-model-ate">Marginal structural model: ATE</h2>
+<p>A <strong>marginal structural model (MSM)</strong> fits a weighted outcome regression in the pseudo-population created by the weights. The weighted regression estimate is equivalent to the marginal (population-average) causal effect.</p>
+<div>
+<div id="webr-7" class="exercise-cell">
+
+</div>
+<script type="webr-7-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiIyMgQVRFIHJpc2sgZGlmZmVyZW5jZSAobGluZWFyIHByb2JhYmlsaXR5IG1vZGVsLCB1bnN0YWJpbGl6ZWQgd2VpZ2h0cylcbmF0ZV9yZF9tb2RlbCA8LSBsbShkZWF0aCB+IHRwYSwgZGF0YSA9IHRwYV9kc19jYywgd2VpZ2h0cyA9IGlwdClcblxuYXRlX3JkIDwtIGF0ZV9yZF9tb2RlbCB8PlxuICBicm9vbTo6dGlkeShjb25mLmludCA9IFRSVUUpIHw+XG4gIGRwbHlyOjpmaWx0ZXIodGVybSA9PSBcInRwYVwiKSB8PlxuICBkcGx5cjo6bXV0YXRlKHRlcm0gPSBcIkFURSBSRFwiKVxuXG4jIyBBVEUgcmlzayByYXRpbyAobG9nIGxpbmssIHVuc3RhYmlsaXplZCB3ZWlnaHRzKVxuYXRlX3JyX21vZGVsIDwtIGdsbShkZWF0aCB+IHRwYSwgZGF0YSA9IHRwYV9kc19jYywgd2VpZ2h0cyA9IGlwdCxcbiAgICAgICAgICAgICAgICAgICAgZmFtaWx5ID0gcXVhc2liaW5vbWlhbChsaW5rID0gXCJsb2dcIikpXG5cbmF0ZV9yciA8LSBhdGVfcnJfbW9kZWwgfD5cbiAgYnJvb206OnRpZHkoY29uZi5pbnQgPSBUUlVFLCBleHBvbmVudGlhdGUgPSBUUlVFKSB8PlxuICBkcGx5cjo6ZmlsdGVyKHRlcm0gPT0gXCJ0cGFcIikgfD5cbiAgZHBseXI6Om11dGF0ZSh0ZXJtID0gXCJBVEUgUlJcIilcblxuYmluZF9yb3dzKGF0ZV9yZCwgYXRlX3JyKSB8PlxuICBkcGx5cjo6c2VsZWN0KHRlcm0sIGVzdGltYXRlLCBjb25mLmxvdywgY29uZi5oaWdoKSB8PlxuICBrYWJsZShkaWdpdHMgPSAzKSJ9
+</script>
+</div>
+<hr>
+</section>
+</section>
+<section id="att-average-treatment-effect-in-the-treated" class="level1">
+<h1>ATT: Average Treatment Effect in the Treated</h1>
+<p>The ATT is the effect of treatment among people <em>who were actually treated</em>. We target the treated group using <strong>standardized mortality ratio (SMR) weights</strong>:</p>
+<p><span class="math display">\[\hat{\omega}_{i,\text{SMR}} = I(A_i=1) + \frac{I(A_i=0)\,\hat{e}(\mathbf{L}_i)}{1-\hat{e}(\mathbf{L}_i)}\]</span></p>
+<p>Treated observations keep weight 1. Untreated observations are upweighted by their odds of treatment, making the untreated pseudo-population resemble the treated group.</p>
+<p><em>Why might the ATT be a more relevant estimand than the ATE in this context?</em> t-PA has well-defined eligibility criteria. The ATE averages across everyone — including people for whom t-PA would be contraindicated. The ATT focuses on the people who look like those who actually received treatment: those who cleared the eligibility bar.</p>
+<section id="calculate-smr-weights" class="level2">
+<h2 class="anchored" data-anchor-id="calculate-smr-weights">Calculate SMR weights</h2>
+<div>
+<div id="webr-8" class="exercise-cell">
+
+</div>
+<script type="webr-8-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoidHBhX2RzX2NjJHNtciA8LSB3aXRoKHRwYV9kc19jYyxcbiAgdHBhICsgKDEgLSB0cGEpICogcHMgLyAoMSAtIHBzKVxuKVxuXG5jYXQoXCJTTVIgd2VpZ2h0IHN1bW1hcnk6XFxuXCIpXG5zdW1tYXJ5KHRwYV9kc19jYyRzbXIpXG5cbmNhdChcIlxcblNNUiB3ZWlnaHRzIGFtb25nIHRyZWF0ZWQ6XFxuXCIpXG5zdW1tYXJ5KHRwYV9kc19jYyRzbXJbdHBhX2RzX2NjJHRwYSA9PSAxXSlcblxuY2F0KFwiXFxuU01SIHdlaWdodHMgYW1vbmcgdW50cmVhdGVkOlxcblwiKVxuc3VtbWFyeSh0cGFfZHNfY2Mkc21yW3RwYV9kc19jYyR0cGEgPT0gMF0pIn0=
+</script>
+</div>
+</section>
+<section id="balance-after-smr-weighting" class="level2">
+<h2 class="anchored" data-anchor-id="balance-after-smr-weighting">Balance after SMR weighting</h2>
+<div>
+<div id="webr-9" class="exercise-cell">
+
+</div>
+<script type="webr-9-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiZGVzaWduX3NtciA8LSBzdXJ2ZXk6OnN2eWRlc2lnbihpZCA9IH4xLCB3ZWlnaHRzID0gfnNtciwgZGF0YSA9IHRwYV9kc19jYylcblxudDFfc21yIDwtIHRhYmxlb25lOjpzdnlDcmVhdGVUYWJsZU9uZShcbiAgZGF0YSAgICAgICA9IGRlc2lnbl9zbXIsXG4gIHZhcnMgICAgICAgPSBjb25mb3VuZGVycyxcbiAgc3RyYXRhICAgICA9IFwidHBhX2ZcIixcbiAgZmFjdG9yVmFycyA9IGNvbmZfY2F0LFxuICBzbWQgICAgICAgID0gVFJVRSxcbiAgdGVzdCAgICAgICA9IEZBTFNFXG4pXG5cbmthYmxlKHByaW50KHQxX3Ntciwgc21kID0gVFJVRSwgcHJpbnRUb2dnbGUgPSBGQUxTRSwgdmFyTGFiZWxzID0gVFJVRSkpIn0=
+</script>
+</div>
+</section>
+<section id="marginal-structural-model-att" class="level2">
+<h2 class="anchored" data-anchor-id="marginal-structural-model-att">Marginal structural model: ATT</h2>
+<div>
+<div id="webr-10" class="exercise-cell">
+
+</div>
+<script type="webr-10-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiYXR0X3JkX21vZGVsIDwtIGxtKGRlYXRoIH4gdHBhLCBkYXRhID0gdHBhX2RzX2NjLCB3ZWlnaHRzID0gc21yKVxuXG5hdHRfcmQgPC0gYXR0X3JkX21vZGVsIHw+XG4gIGJyb29tOjp0aWR5KGNvbmYuaW50ID0gVFJVRSkgfD5cbiAgZHBseXI6OmZpbHRlcih0ZXJtID09IFwidHBhXCIpIHw+XG4gIGRwbHlyOjptdXRhdGUodGVybSA9IFwiQVRUIFJEXCIpXG5cbmF0dF9yciA8LSBnbG0oZGVhdGggfiB0cGEsIGRhdGEgPSB0cGFfZHNfY2MsIHdlaWdodHMgPSBzbXIsXG4gICAgICAgICAgICAgIGZhbWlseSA9IHF1YXNpYmlub21pYWwobGluayA9IFwibG9nXCIpKSB8PlxuICBicm9vbTo6dGlkeShjb25mLmludCA9IFRSVUUsIGV4cG9uZW50aWF0ZSA9IFRSVUUpIHw+XG4gIGRwbHlyOjpmaWx0ZXIodGVybSA9PSBcInRwYVwiKSB8PlxuICBkcGx5cjo6bXV0YXRlKHRlcm0gPSBcIkFUVCBSUlwiKVxuXG5iaW5kX3Jvd3MoYXR0X3JkLCBhdHRfcnIpIHw+XG4gIGRwbHlyOjpzZWxlY3QodGVybSwgZXN0aW1hdGUsIGNvbmYubG93LCBjb25mLmhpZ2gpIHw+XG4gIGthYmxlKGRpZ2l0cyA9IDMpIn0=
+</script>
+</div>
+<hr>
+</section>
+</section>
+<section id="atu-average-treatment-effect-in-the-untreated" class="level1">
+<h1>ATU: Average Treatment Effect in the Untreated</h1>
+<p>The ATU asks: what would have been the effect of t-PA among people who <em>were not</em> treated? We target the untreated group using SRR (standardized risk ratio) weights:</p>
+<p><span class="math display">\[\hat{\omega}_{i,\text{SRR}} = \frac{I(A_i=1)\left[1-\hat{e}(\mathbf{L}_i)\right]}{\hat{e}(\mathbf{L}_i)} + I(A_i=0)\]</span></p>
+<div>
+<div id="webr-11" class="exercise-cell">
+
+</div>
+<script type="webr-11-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoidHBhX2RzX2NjJHNtcl9hdHUgPC0gd2l0aCh0cGFfZHNfY2MsXG4gICgxIC0gdHBhKSArIHRwYSAqICgxIC0gcHMpIC8gcHNcbilcblxuYXR1X3JkX21vZGVsIDwtIGxtKGRlYXRoIH4gdHBhLCBkYXRhID0gdHBhX2RzX2NjLCB3ZWlnaHRzID0gc21yX2F0dSlcblxuYXR1X3JkIDwtIGF0dV9yZF9tb2RlbCB8PlxuICBicm9vbTo6dGlkeShjb25mLmludCA9IFRSVUUpIHw+XG4gIGRwbHlyOjpmaWx0ZXIodGVybSA9PSBcInRwYVwiKSB8PlxuICBkcGx5cjo6bXV0YXRlKHRlcm0gPSBcIkFUVSBSRFwiKVxuXG5hdHVfcnIgPC0gZ2xtKGRlYXRoIH4gdHBhLCBkYXRhID0gdHBhX2RzX2NjLCB3ZWlnaHRzID0gc21yX2F0dSxcbiAgICAgICAgICAgICAgZmFtaWx5ID0gcXVhc2liaW5vbWlhbChsaW5rID0gXCJsb2dcIikpIHw+XG4gIGJyb29tOjp0aWR5KGNvbmYuaW50ID0gVFJVRSwgZXhwb25lbnRpYXRlID0gVFJVRSkgfD5cbiAgZHBseXI6OmZpbHRlcih0ZXJtID09IFwidHBhXCIpIHw+XG4gIGRwbHlyOjptdXRhdGUodGVybSA9IFwiQVRVIFJSXCIpXG5cbmJpbmRfcm93cyhhdHVfcmQsIGF0dV9ycikgfD5cbiAgZHBseXI6OnNlbGVjdCh0ZXJtLCBlc3RpbWF0ZSwgY29uZi5sb3csIGNvbmYuaGlnaCkgfD5cbiAga2FibGUoZGlnaXRzID0gMykifQ==
+</script>
+</div>
+<p><em>Why might the ATU be less meaningful here?</em> The untreated group includes patients who were ineligible for t-PA (e.g., hemorrhagic stroke, late arrival). Estimating “what would happen if we treated them” requires extrapolating to covariate regions with very few (or no) treated individuals.</p>
+<hr>
+</section>
+<section id="love-plot-balance-across-weighting-methods" class="level1">
+<h1>Love plot: Balance across weighting methods</h1>
+<p>A Love plot displays SMDs for all covariates across weighting methods side-by-side. The vertical reference line at 0.1 represents a commonly used threshold for acceptable balance.</p>
+<div>
+<div id="webr-12" class="exercise-cell">
+
+</div>
+<script type="webr-12-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiIyMgRXh0cmFjdCBTTURzIGZyb20gdGFibGVvbmUgb2JqZWN0cyBhbmQgbGFiZWwgYnkgd2VpZ2h0IHR5cGVcbnNtZF9kYXRhIDwtIGRwbHlyOjpiaW5kX3Jvd3MoXG4gIHRhYmxlb25lOjpFeHRyYWN0U21kKHQxLCB2YXJMYWJlbHMgPSBUUlVFKSB8PlxuICAgIHRpYmJsZTo6YXNfdGliYmxlKHJvd25hbWVzID0gXCJ2YXJpYWJsZVwiKSB8PlxuICAgIGRwbHlyOjptdXRhdGUod2VpZ2h0ID0gXCJVbndlaWdodGVkXCIpLFxuICB0YWJsZW9uZTo6RXh0cmFjdFNtZCh0MV9pcHQsIHZhckxhYmVscyA9IFRSVUUpIHw+XG4gICAgdGliYmxlOjphc190aWJibGUocm93bmFtZXMgPSBcInZhcmlhYmxlXCIpIHw+XG4gICAgZHBseXI6Om11dGF0ZSh3ZWlnaHQgPSBcIklQVCAoQVRFKVwiKSxcbiAgdGFibGVvbmU6OkV4dHJhY3RTbWQodDFfc21yLCB2YXJMYWJlbHMgPSBUUlVFKSB8PlxuICAgIHRpYmJsZTo6YXNfdGliYmxlKHJvd25hbWVzID0gXCJ2YXJpYWJsZVwiKSB8PlxuICAgIGRwbHlyOjptdXRhdGUod2VpZ2h0ID0gXCJTTVIgKEFUVClcIilcbilcblxuZ2dwbG90KHNtZF9kYXRhLCBhZXMoeCA9IGAxIHZzIDJgLCB5ID0gdmFyaWFibGUsIGNvbG9yID0gd2VpZ2h0LCBzaGFwZSA9IHdlaWdodCkpICtcbiAgZ2VvbV92bGluZSh4aW50ZXJjZXB0ID0gMC4xLCBsaW5ld2lkdGggPSAwLjQsIGxpbmV0eXBlID0gXCJkYXNoZWRcIikgK1xuICBnZW9tX3BvaW50KHNpemUgPSAyKSArXG4gIHRoZW1lX2NsYXNzaWMoKSArXG4gIGxhYnMoeSA9IFwiXCIsIHggPSBcIlN0YW5kYXJkaXplZCBNZWFuIERpZmZlcmVuY2VcIixcbiAgICAgICBjb2xvciA9IFwiV2VpZ2h0aW5nIG1ldGhvZFwiLCBzaGFwZSA9IFwiV2VpZ2h0aW5nIG1ldGhvZFwiLFxuICAgICAgIHRpdGxlID0gXCJDb3ZhcmlhdGUgYmFsYW5jZSBiZWZvcmUgYW5kIGFmdGVyIHdlaWdodGluZ1wiKSJ9
+</script>
+</div>
+<p>Do both weighting approaches achieve balance (SMD &lt; 0.1)? Are there any covariates that remain imbalanced?</p>
+<blockquote class="blockquote">
+<p><strong>Note:</strong> To build this Love plot, you need the <code>t1</code> object from the unweighted Table 1. This requires that the unweighted Table 1 code from Activity 1 has been run in <em>this</em> session. If you see an error about <code>t1</code> not found, run the block below.</p>
+</blockquote>
+<div>
+<div id="webr-13" class="exercise-cell">
+
+</div>
+<script type="webr-13-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiIyMgUnVuIHRoaXMgaWYgdDEgaXMgbm90IGZvdW5kIGFib3ZlXG50MSA8LSB0YWJsZW9uZTo6Q3JlYXRlVGFibGVPbmUoXG4gIHZhcnMgICAgICAgPSBjb25mb3VuZGVycyxcbiAgc3RyYXRhICAgICA9IFwidHBhX2ZcIixcbiAgZGF0YSAgICAgICA9IHRwYV9kc19jYyxcbiAgZmFjdG9yVmFycyA9IGNvbmZfY2F0LFxuICBzbWQgICAgICAgID0gVFJVRSxcbiAgdGVzdCAgICAgICA9IEZBTFNFXG4pIn0=
+</script>
+</div>
+<hr>
+</section>
+<section id="comparing-all-estimates" class="level1">
+<h1>Comparing all estimates</h1>
+<p>Finally, we collect all effect estimates — crude, multivariable-adjusted, and weighted — to compare how the choice of method and estimand affects results.</p>
+<div>
+<div id="webr-14" class="exercise-cell">
+
+</div>
+<script type="webr-14-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiIyMgUmUtZXN0aW1hdGUgY3J1ZGUgYW5kIG11bHRpdmFyaWFibGUgZnJvbSB0aGlzIHNlc3Npb25cbmNydWRlX3JkX21vZGVsIDwtIGdsbShkZWF0aCB+IHRwYSwgZGF0YSA9IHRwYV9kc19jYyxcbiAgICAgICAgICAgICAgICAgICAgICBmYW1pbHkgPSBiaW5vbWlhbChsaW5rID0gXCJpZGVudGl0eVwiKSlcbmNydWRlX3JkIDwtIGNydWRlX3JkX21vZGVsIHw+XG4gIGJyb29tOjp0aWR5KGNvbmYuaW50ID0gVFJVRSkgfD5cbiAgZHBseXI6OmZpbHRlcih0ZXJtID09IFwidHBhXCIpIHw+XG4gIGRwbHlyOjptdXRhdGUodGVybSA9IFwiQ3J1ZGUgUkRcIilcblxuY3J1ZGVfcnIgPC0gZ2xtKGRlYXRoIH4gdHBhLCBkYXRhID0gdHBhX2RzX2NjLFxuICAgICAgICAgICAgICAgIGZhbWlseSA9IGJpbm9taWFsKGxpbmsgPSBcImxvZ1wiKSkgfD5cbiAgYnJvb206OnRpZHkoY29uZi5pbnQgPSBUUlVFLCBleHBvbmVudGlhdGUgPSBUUlVFKSB8PlxuICBkcGx5cjo6ZmlsdGVyKHRlcm0gPT0gXCJ0cGFcIikgfD5cbiAgZHBseXI6Om11dGF0ZSh0ZXJtID0gXCJDcnVkZSBSUlwiKVxuXG5vdXRmb3JtIDwtIHNwcmludGYoXCJkZWF0aCB+IHRwYSArICVzXCIsIHBhc3RlKGNvbmZvdW5kZXJzLCBjb2xsYXBzZSA9IFwiICsgXCIpKVxubXVsdGlfcmVzIDwtIGdsbShhcy5mb3JtdWxhKG91dGZvcm0pLCBkYXRhID0gdHBhX2RzX2NjLFxuICAgICAgICAgICAgICAgICBmYW1pbHkgPSBiaW5vbWlhbChsaW5rID0gXCJsb2dcIikpIHw+XG4gIGJyb29tOjp0aWR5KGNvbmYuaW50ID0gVFJVRSwgZXhwb25lbnRpYXRlID0gVFJVRSkgfD5cbiAgZHBseXI6OmZpbHRlcih0ZXJtID09IFwidHBhXCIpIHw+XG4gIGRwbHlyOjptdXRhdGUodGVybSA9IFwiQ29uZGl0aW9uYWwgUlIgKE1WKVwiKVxuXG5kcGx5cjo6YmluZF9yb3dzKGNydWRlX3JkLCBjcnVkZV9yciwgbXVsdGlfcmVzLFxuICAgICAgICAgICAgICAgICBhdGVfcmQsIGF0ZV9yciwgYXR0X3JkLCBhdHRfcnIsIGF0dV9yZCwgYXR1X3JyKSB8PlxuICBkcGx5cjo6dHJhbnNtdXRlKFxuICAgIE1ldGhvZCAgID0gaWZfZWxzZSh0ZXJtICVpbiUgYyhcIkNydWRlIFJEXCIsIFwiQ3J1ZGUgUlJcIiwgXCJDb25kaXRpb25hbCBSUiAoTVYpXCIpLFxuICAgICAgICAgICAgICAgICAgICAgICBcIlVuYWRqdXN0ZWQgLyBjb25kaXRpb25hbFwiLCBcIlByb3BlbnNpdHkgc2NvcmUgd2VpZ2h0ZWRcIiksXG4gICAgRXN0aW1hbmQgPSB0ZXJtLFxuICAgIEVzdGltYXRlID0gcm91bmQoZXN0aW1hdGUsIDMpLFxuICAgIGA5NSUgQ0lgID0gcGFzdGUwKFwiKFwiLCByb3VuZChjb25mLmxvdywgMyksIFwiLCBcIiwgcm91bmQoY29uZi5oaWdoLCAzKSwgXCIpXCIpXG4gICkgfD5cbiAga2FibGUoKSJ9
+</script>
+</div>
+<p>Discuss with your group:</p>
+<ul>
+<li>How do the ATE, ATT, and ATU estimates compare to each other?</li>
+<li>How do the weighted estimates compare to the crude and multivariable estimates?</li>
+<li>Which estimand is most relevant for the clinical question?</li>
+<li>What does this tell us about why observational studies may disagree with RCTs?</li>
+</ul>
+
+
+<script type="webr-data">
+eyJvcHRpb25zIjp7ImJhc2VVcmwiOiJodHRwczovL3dlYnIuci13YXNtLm9yZy92MC41LjgvIn0sInBhY2thZ2VzIjp7InBrZ3MiOlsiZXZhbHVhdGUiLCJrbml0ciIsImh0bWx0b29scyIsImRwbHlyIiwicHVycnIiLCJnZ3Bsb3QyIiwia2FibGVFeHRyYSIsInRpZHlyIiwiYnJvb20iLCJ0YWJsZW9uZSIsInN1cnZleSIsInNtZCJdLCJyZXBvcyI6W119LCJyZW5kZXJfZGYiOiJkZWZhdWx0In0=
+</script>
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W3siY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC0xNCIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfMTQ7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4ifSx7ImNlbGxOYW1lIjoid2Vici0xNCIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJzb3VyY2UiOiJ2aWV3b2YgX3dlYnJfZWRpdG9yXzE0ID0ge1xuICBjb25zdCB7IFdlYlJFeGVyY2lzZUVkaXRvciwgYjY0RGVjb2RlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBzY3JpcHRDb250ZW50ID0gZG9jdW1lbnQucXVlcnlTZWxlY3Rvcihgc2NyaXB0W3R5cGU9XFxcIndlYnItMTQtY29udGVudHNcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBibG9jayA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKHNjcmlwdENvbnRlbnQpKTtcblxuICBjb25zdCBvcHRpb25zID0gT2JqZWN0LmFzc2lnbih7IGlkOiBgd2Vici0xNC1jb250ZW50c2AgfSwgYmxvY2suYXR0cik7XG4gIGNvbnN0IGVkaXRvciA9IG5ldyBXZWJSRXhlcmNpc2VFZGl0b3Iod2ViUk9qcy53ZWJSUHJvbWlzZSwgYmxvY2suY29kZSwgb3B0aW9ucyk7XG5cbiAgcmV0dXJuIGVkaXRvci5jb250YWluZXI7XG59XG5fd2Vicl92YWx1ZV8xNCA9IHdlYlJPanMucHJvY2Vzcyhfd2Vicl9lZGl0b3JfMTQsIHt9KTtcbiJ9LHsiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC0xMyIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfMTM7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4ifSx7ImNlbGxOYW1lIjoid2Vici0xMyIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJzb3VyY2UiOiJ2aWV3b2YgX3dlYnJfZWRpdG9yXzEzID0ge1xuICBjb25zdCB7IFdlYlJFeGVyY2lzZUVkaXRvciwgYjY0RGVjb2RlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBzY3JpcHRDb250ZW50ID0gZG9jdW1lbnQucXVlcnlTZWxlY3Rvcihgc2NyaXB0W3R5cGU9XFxcIndlYnItMTMtY29udGVudHNcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBibG9jayA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKHNjcmlwdENvbnRlbnQpKTtcblxuICBjb25zdCBvcHRpb25zID0gT2JqZWN0LmFzc2lnbih7IGlkOiBgd2Vici0xMy1jb250ZW50c2AgfSwgYmxvY2suYXR0cik7XG4gIGNvbnN0IGVkaXRvciA9IG5ldyBXZWJSRXhlcmNpc2VFZGl0b3Iod2ViUk9qcy53ZWJSUHJvbWlzZSwgYmxvY2suY29kZSwgb3B0aW9ucyk7XG5cbiAgcmV0dXJuIGVkaXRvci5jb250YWluZXI7XG59XG5fd2Vicl92YWx1ZV8xMyA9IHdlYlJPanMucHJvY2Vzcyhfd2Vicl9lZGl0b3JfMTMsIHt9KTtcbiJ9LHsiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC0xMiIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfMTI7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4ifSx7ImNlbGxOYW1lIjoid2Vici0xMiIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJzb3VyY2UiOiJ2aWV3b2YgX3dlYnJfZWRpdG9yXzEyID0ge1xuICBjb25zdCB7IFdlYlJFeGVyY2lzZUVkaXRvciwgYjY0RGVjb2RlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBzY3JpcHRDb250ZW50ID0gZG9jdW1lbnQucXVlcnlTZWxlY3Rvcihgc2NyaXB0W3R5cGU9XFxcIndlYnItMTItY29udGVudHNcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBibG9jayA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKHNjcmlwdENvbnRlbnQpKTtcblxuICBjb25zdCBvcHRpb25zID0gT2JqZWN0LmFzc2lnbih7IGlkOiBgd2Vici0xMi1jb250ZW50c2AgfSwgYmxvY2suYXR0cik7XG4gIGNvbnN0IGVkaXRvciA9IG5ldyBXZWJSRXhlcmNpc2VFZGl0b3Iod2ViUk9qcy53ZWJSUHJvbWlzZSwgYmxvY2suY29kZSwgb3B0aW9ucyk7XG5cbiAgcmV0dXJuIGVkaXRvci5jb250YWluZXI7XG59XG5fd2Vicl92YWx1ZV8xMiA9IHdlYlJPanMucHJvY2Vzcyhfd2Vicl9lZGl0b3JfMTIsIHt9KTtcbiJ9LHsiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC0xMSIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfMTE7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4ifSx7ImNlbGxOYW1lIjoid2Vici0xMSIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJzb3VyY2UiOiJ2aWV3b2YgX3dlYnJfZWRpdG9yXzExID0ge1xuICBjb25zdCB7IFdlYlJFeGVyY2lzZUVkaXRvciwgYjY0RGVjb2RlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBzY3JpcHRDb250ZW50ID0gZG9jdW1lbnQucXVlcnlTZWxlY3Rvcihgc2NyaXB0W3R5cGU9XFxcIndlYnItMTEtY29udGVudHNcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBibG9jayA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKHNjcmlwdENvbnRlbnQpKTtcblxuICBjb25zdCBvcHRpb25zID0gT2JqZWN0LmFzc2lnbih7IGlkOiBgd2Vici0xMS1jb250ZW50c2AgfSwgYmxvY2suYXR0cik7XG4gIGNvbnN0IGVkaXRvciA9IG5ldyBXZWJSRXhlcmNpc2VFZGl0b3Iod2ViUk9qcy53ZWJSUHJvbWlzZSwgYmxvY2suY29kZSwgb3B0aW9ucyk7XG5cbiAgcmV0dXJuIGVkaXRvci5jb250YWluZXI7XG59XG5fd2Vicl92YWx1ZV8xMSA9IHdlYlJPanMucHJvY2Vzcyhfd2Vicl9lZGl0b3JfMTEsIHt9KTtcbiJ9LHsiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC0xMCIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfMTA7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4ifSx7ImNlbGxOYW1lIjoid2Vici0xMCIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJzb3VyY2UiOiJ2aWV3b2YgX3dlYnJfZWRpdG9yXzEwID0ge1xuICBjb25zdCB7IFdlYlJFeGVyY2lzZUVkaXRvciwgYjY0RGVjb2RlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBzY3JpcHRDb250ZW50ID0gZG9jdW1lbnQucXVlcnlTZWxlY3Rvcihgc2NyaXB0W3R5cGU9XFxcIndlYnItMTAtY29udGVudHNcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBibG9jayA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKHNjcmlwdENvbnRlbnQpKTtcblxuICBjb25zdCBvcHRpb25zID0gT2JqZWN0LmFzc2lnbih7IGlkOiBgd2Vici0xMC1jb250ZW50c2AgfSwgYmxvY2suYXR0cik7XG4gIGNvbnN0IGVkaXRvciA9IG5ldyBXZWJSRXhlcmNpc2VFZGl0b3Iod2ViUk9qcy53ZWJSUHJvbWlzZSwgYmxvY2suY29kZSwgb3B0aW9ucyk7XG5cbiAgcmV0dXJuIGVkaXRvci5jb250YWluZXI7XG59XG5fd2Vicl92YWx1ZV8xMCA9IHdlYlJPanMucHJvY2Vzcyhfd2Vicl9lZGl0b3JfMTAsIHt9KTtcbiJ9LHsiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC05IiwiaW5saW5lIjpmYWxzZSwibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoie1xuICAvLyBXYWl0IGZvciBvdXRwdXQgdG8gYmUgd3JpdHRlbiB0byB0aGUgRE9NLCB0aGVuIHRyaWdnZXIgd2lkZ2V0IHJlbmRlcmluZ1xuICBhd2FpdCBfd2Vicl92YWx1ZV85O1xuICBpZiAod2luZG93LkhUTUxXaWRnZXRzKSB7XG4gICAgd2luZG93LkhUTUxXaWRnZXRzLnN0YXRpY1JlbmRlcigpO1xuICB9XG4gIGlmICh3aW5kb3cuUGFnZWRUYWJsZURvYykge1xuICAgIHdpbmRvdy5QYWdlZFRhYmxlRG9jLmluaXRBbGwoKTtcbiAgfVxufVxuIn0seyJjZWxsTmFtZSI6IndlYnItOSIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJzb3VyY2UiOiJ2aWV3b2YgX3dlYnJfZWRpdG9yXzkgPSB7XG4gIGNvbnN0IHsgV2ViUkV4ZXJjaXNlRWRpdG9yLCBiNjREZWNvZGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IHNjcmlwdENvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici05LWNvbnRlbnRzXFxcIl1gKS50ZXh0Q29udGVudDtcbiAgY29uc3QgYmxvY2sgPSBKU09OLnBhcnNlKGI2NERlY29kZShzY3JpcHRDb250ZW50KSk7XG5cbiAgY29uc3Qgb3B0aW9ucyA9IE9iamVjdC5hc3NpZ24oeyBpZDogYHdlYnItOS1jb250ZW50c2AgfSwgYmxvY2suYXR0cik7XG4gIGNvbnN0IGVkaXRvciA9IG5ldyBXZWJSRXhlcmNpc2VFZGl0b3Iod2ViUk9qcy53ZWJSUHJvbWlzZSwgYmxvY2suY29kZSwgb3B0aW9ucyk7XG5cbiAgcmV0dXJuIGVkaXRvci5jb250YWluZXI7XG59XG5fd2Vicl92YWx1ZV85ID0gd2ViUk9qcy5wcm9jZXNzKF93ZWJyX2VkaXRvcl85LCB7fSk7XG4ifSx7ImNlbGxOYW1lIjoid2Vici13aWRnZXQtOCIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfODtcbiAgaWYgKHdpbmRvdy5IVE1MV2lkZ2V0cykge1xuICAgIHdpbmRvdy5IVE1MV2lkZ2V0cy5zdGF0aWNSZW5kZXIoKTtcbiAgfVxuICBpZiAod2luZG93LlBhZ2VkVGFibGVEb2MpIHtcbiAgICB3aW5kb3cuUGFnZWRUYWJsZURvYy5pbml0QWxsKCk7XG4gIH1cbn1cbiJ9LHsiY2VsbE5hbWUiOiJ3ZWJyLTgiLCJpbmxpbmUiOmZhbHNlLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0Iiwic291cmNlIjoidmlld29mIF93ZWJyX2VkaXRvcl84ID0ge1xuICBjb25zdCB7IFdlYlJFeGVyY2lzZUVkaXRvciwgYjY0RGVjb2RlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBzY3JpcHRDb250ZW50ID0gZG9jdW1lbnQucXVlcnlTZWxlY3Rvcihgc2NyaXB0W3R5cGU9XFxcIndlYnItOC1jb250ZW50c1xcXCJdYCkudGV4dENvbnRlbnQ7XG4gIGNvbnN0IGJsb2NrID0gSlNPTi5wYXJzZShiNjREZWNvZGUoc2NyaXB0Q29udGVudCkpO1xuXG4gIGNvbnN0IG9wdGlvbnMgPSBPYmplY3QuYXNzaWduKHsgaWQ6IGB3ZWJyLTgtY29udGVudHNgIH0sIGJsb2NrLmF0dHIpO1xuICBjb25zdCBlZGl0b3IgPSBuZXcgV2ViUkV4ZXJjaXNlRWRpdG9yKHdlYlJPanMud2ViUlByb21pc2UsIGJsb2NrLmNvZGUsIG9wdGlvbnMpO1xuXG4gIHJldHVybiBlZGl0b3IuY29udGFpbmVyO1xufVxuX3dlYnJfdmFsdWVfOCA9IHdlYlJPanMucHJvY2Vzcyhfd2Vicl9lZGl0b3JfOCwge30pO1xuIn0seyJjZWxsTmFtZSI6IndlYnItd2lkZ2V0LTciLCJpbmxpbmUiOmZhbHNlLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJ7XG4gIC8vIFdhaXQgZm9yIG91dHB1dCB0byBiZSB3cml0dGVuIHRvIHRoZSBET00sIHRoZW4gdHJpZ2dlciB3aWRnZXQgcmVuZGVyaW5nXG4gIGF3YWl0IF93ZWJyX3ZhbHVlXzc7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4ifSx7ImNlbGxOYW1lIjoid2Vici03IiwiaW5saW5lIjpmYWxzZSwibWV0aG9kTmFtZSI6ImludGVycHJldCIsInNvdXJjZSI6InZpZXdvZiBfd2Vicl9lZGl0b3JfNyA9IHtcbiAgY29uc3QgeyBXZWJSRXhlcmNpc2VFZGl0b3IsIGI2NERlY29kZSB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3Qgc2NyaXB0Q29udGVudCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoYHNjcmlwdFt0eXBlPVxcXCJ3ZWJyLTctY29udGVudHNcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBibG9jayA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKHNjcmlwdENvbnRlbnQpKTtcblxuICBjb25zdCBvcHRpb25zID0gT2JqZWN0LmFzc2lnbih7IGlkOiBgd2Vici03LWNvbnRlbnRzYCB9LCBibG9jay5hdHRyKTtcbiAgY29uc3QgZWRpdG9yID0gbmV3IFdlYlJFeGVyY2lzZUVkaXRvcih3ZWJST2pzLndlYlJQcm9taXNlLCBibG9jay5jb2RlLCBvcHRpb25zKTtcblxuICByZXR1cm4gZWRpdG9yLmNvbnRhaW5lcjtcbn1cbl93ZWJyX3ZhbHVlXzcgPSB3ZWJST2pzLnByb2Nlc3MoX3dlYnJfZWRpdG9yXzcsIHt9KTtcbiJ9LHsiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC02IiwiaW5saW5lIjpmYWxzZSwibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoie1xuICAvLyBXYWl0IGZvciBvdXRwdXQgdG8gYmUgd3JpdHRlbiB0byB0aGUgRE9NLCB0aGVuIHRyaWdnZXIgd2lkZ2V0IHJlbmRlcmluZ1xuICBhd2FpdCBfd2Vicl92YWx1ZV82O1xuICBpZiAod2luZG93LkhUTUxXaWRnZXRzKSB7XG4gICAgd2luZG93LkhUTUxXaWRnZXRzLnN0YXRpY1JlbmRlcigpO1xuICB9XG4gIGlmICh3aW5kb3cuUGFnZWRUYWJsZURvYykge1xuICAgIHdpbmRvdy5QYWdlZFRhYmxlRG9jLmluaXRBbGwoKTtcbiAgfVxufVxuIn0seyJjZWxsTmFtZSI6IndlYnItNiIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJzb3VyY2UiOiJ2aWV3b2YgX3dlYnJfZWRpdG9yXzYgPSB7XG4gIGNvbnN0IHsgV2ViUkV4ZXJjaXNlRWRpdG9yLCBiNjREZWNvZGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IHNjcmlwdENvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici02LWNvbnRlbnRzXFxcIl1gKS50ZXh0Q29udGVudDtcbiAgY29uc3QgYmxvY2sgPSBKU09OLnBhcnNlKGI2NERlY29kZShzY3JpcHRDb250ZW50KSk7XG5cbiAgY29uc3Qgb3B0aW9ucyA9IE9iamVjdC5hc3NpZ24oeyBpZDogYHdlYnItNi1jb250ZW50c2AgfSwgYmxvY2suYXR0cik7XG4gIGNvbnN0IGVkaXRvciA9IG5ldyBXZWJSRXhlcmNpc2VFZGl0b3Iod2ViUk9qcy53ZWJSUHJvbWlzZSwgYmxvY2suY29kZSwgb3B0aW9ucyk7XG5cbiAgcmV0dXJuIGVkaXRvci5jb250YWluZXI7XG59XG5fd2Vicl92YWx1ZV82ID0gd2ViUk9qcy5wcm9jZXNzKF93ZWJyX2VkaXRvcl82LCB7fSk7XG4ifSx7ImNlbGxOYW1lIjoid2Vici13aWRnZXQtNSIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfNTtcbiAgaWYgKHdpbmRvdy5IVE1MV2lkZ2V0cykge1xuICAgIHdpbmRvdy5IVE1MV2lkZ2V0cy5zdGF0aWNSZW5kZXIoKTtcbiAgfVxuICBpZiAod2luZG93LlBhZ2VkVGFibGVEb2MpIHtcbiAgICB3aW5kb3cuUGFnZWRUYWJsZURvYy5pbml0QWxsKCk7XG4gIH1cbn1cbiJ9LHsiY2VsbE5hbWUiOiJ3ZWJyLTUiLCJpbmxpbmUiOmZhbHNlLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0Iiwic291cmNlIjoidmlld29mIF93ZWJyX2VkaXRvcl81ID0ge1xuICBjb25zdCB7IFdlYlJFeGVyY2lzZUVkaXRvciwgYjY0RGVjb2RlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBzY3JpcHRDb250ZW50ID0gZG9jdW1lbnQucXVlcnlTZWxlY3Rvcihgc2NyaXB0W3R5cGU9XFxcIndlYnItNS1jb250ZW50c1xcXCJdYCkudGV4dENvbnRlbnQ7XG4gIGNvbnN0IGJsb2NrID0gSlNPTi5wYXJzZShiNjREZWNvZGUoc2NyaXB0Q29udGVudCkpO1xuXG4gIGNvbnN0IG9wdGlvbnMgPSBPYmplY3QuYXNzaWduKHsgaWQ6IGB3ZWJyLTUtY29udGVudHNgIH0sIGJsb2NrLmF0dHIpO1xuICBjb25zdCBlZGl0b3IgPSBuZXcgV2ViUkV4ZXJjaXNlRWRpdG9yKHdlYlJPanMud2ViUlByb21pc2UsIGJsb2NrLmNvZGUsIG9wdGlvbnMpO1xuXG4gIHJldHVybiBlZGl0b3IuY29udGFpbmVyO1xufVxuX3dlYnJfdmFsdWVfNSA9IHdlYlJPanMucHJvY2Vzcyhfd2Vicl9lZGl0b3JfNSwge30pO1xuIn0seyJjZWxsTmFtZSI6IndlYnItd2lkZ2V0LTQiLCJpbmxpbmUiOmZhbHNlLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJ7XG4gIC8vIFdhaXQgZm9yIG91dHB1dCB0byBiZSB3cml0dGVuIHRvIHRoZSBET00sIHRoZW4gdHJpZ2dlciB3aWRnZXQgcmVuZGVyaW5nXG4gIGF3YWl0IF93ZWJyX3ZhbHVlXzQ7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4ifSx7ImNlbGxOYW1lIjoid2Vici00IiwiaW5saW5lIjpmYWxzZSwibWV0aG9kTmFtZSI6ImludGVycHJldCIsInNvdXJjZSI6InZpZXdvZiBfd2Vicl9lZGl0b3JfNCA9IHtcbiAgY29uc3QgeyBXZWJSRXhlcmNpc2VFZGl0b3IsIGI2NERlY29kZSB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3Qgc2NyaXB0Q29udGVudCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoYHNjcmlwdFt0eXBlPVxcXCJ3ZWJyLTQtY29udGVudHNcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBibG9jayA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKHNjcmlwdENvbnRlbnQpKTtcblxuICBjb25zdCBvcHRpb25zID0gT2JqZWN0LmFzc2lnbih7IGlkOiBgd2Vici00LWNvbnRlbnRzYCB9LCBibG9jay5hdHRyKTtcbiAgY29uc3QgZWRpdG9yID0gbmV3IFdlYlJFeGVyY2lzZUVkaXRvcih3ZWJST2pzLndlYlJQcm9taXNlLCBibG9jay5jb2RlLCBvcHRpb25zKTtcblxuICByZXR1cm4gZWRpdG9yLmNvbnRhaW5lcjtcbn1cbl93ZWJyX3ZhbHVlXzQgPSB3ZWJST2pzLnByb2Nlc3MoX3dlYnJfZWRpdG9yXzQsIHt9KTtcbiJ9LHsiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC0zIiwiaW5saW5lIjpmYWxzZSwibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoie1xuICAvLyBXYWl0IGZvciBvdXRwdXQgdG8gYmUgd3JpdHRlbiB0byB0aGUgRE9NLCB0aGVuIHRyaWdnZXIgd2lkZ2V0IHJlbmRlcmluZ1xuICBhd2FpdCBfd2Vicl92YWx1ZV8zO1xuICBpZiAod2luZG93LkhUTUxXaWRnZXRzKSB7XG4gICAgd2luZG93LkhUTUxXaWRnZXRzLnN0YXRpY1JlbmRlcigpO1xuICB9XG4gIGlmICh3aW5kb3cuUGFnZWRUYWJsZURvYykge1xuICAgIHdpbmRvdy5QYWdlZFRhYmxlRG9jLmluaXRBbGwoKTtcbiAgfVxufVxuIn0seyJjZWxsTmFtZSI6IndlYnItMyIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJzb3VyY2UiOiJ2aWV3b2YgX3dlYnJfZWRpdG9yXzMgPSB7XG4gIGNvbnN0IHsgV2ViUkV4ZXJjaXNlRWRpdG9yLCBiNjREZWNvZGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IHNjcmlwdENvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici0zLWNvbnRlbnRzXFxcIl1gKS50ZXh0Q29udGVudDtcbiAgY29uc3QgYmxvY2sgPSBKU09OLnBhcnNlKGI2NERlY29kZShzY3JpcHRDb250ZW50KSk7XG5cbiAgY29uc3Qgb3B0aW9ucyA9IE9iamVjdC5hc3NpZ24oeyBpZDogYHdlYnItMy1jb250ZW50c2AgfSwgYmxvY2suYXR0cik7XG4gIGNvbnN0IGVkaXRvciA9IG5ldyBXZWJSRXhlcmNpc2VFZGl0b3Iod2ViUk9qcy53ZWJSUHJvbWlzZSwgYmxvY2suY29kZSwgb3B0aW9ucyk7XG5cbiAgcmV0dXJuIGVkaXRvci5jb250YWluZXI7XG59XG5fd2Vicl92YWx1ZV8zID0gd2ViUk9qcy5wcm9jZXNzKF93ZWJyX2VkaXRvcl8zLCB7fSk7XG4ifSx7ImNlbGxOYW1lIjoid2Vici13aWRnZXQtMiIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfMjtcbiAgaWYgKHdpbmRvdy5IVE1MV2lkZ2V0cykge1xuICAgIHdpbmRvdy5IVE1MV2lkZ2V0cy5zdGF0aWNSZW5kZXIoKTtcbiAgfVxuICBpZiAod2luZG93LlBhZ2VkVGFibGVEb2MpIHtcbiAgICB3aW5kb3cuUGFnZWRUYWJsZURvYy5pbml0QWxsKCk7XG4gIH1cbn1cbiJ9LHsiY2VsbE5hbWUiOiJ3ZWJyLTIiLCJpbmxpbmUiOmZhbHNlLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0Iiwic291cmNlIjoidmlld29mIF93ZWJyX2VkaXRvcl8yID0ge1xuICBjb25zdCB7IFdlYlJFeGVyY2lzZUVkaXRvciwgYjY0RGVjb2RlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBzY3JpcHRDb250ZW50ID0gZG9jdW1lbnQucXVlcnlTZWxlY3Rvcihgc2NyaXB0W3R5cGU9XFxcIndlYnItMi1jb250ZW50c1xcXCJdYCkudGV4dENvbnRlbnQ7XG4gIGNvbnN0IGJsb2NrID0gSlNPTi5wYXJzZShiNjREZWNvZGUoc2NyaXB0Q29udGVudCkpO1xuXG4gIGNvbnN0IG9wdGlvbnMgPSBPYmplY3QuYXNzaWduKHsgaWQ6IGB3ZWJyLTItY29udGVudHNgIH0sIGJsb2NrLmF0dHIpO1xuICBjb25zdCBlZGl0b3IgPSBuZXcgV2ViUkV4ZXJjaXNlRWRpdG9yKHdlYlJPanMud2ViUlByb21pc2UsIGJsb2NrLmNvZGUsIG9wdGlvbnMpO1xuXG4gIHJldHVybiBlZGl0b3IuY29udGFpbmVyO1xufVxuX3dlYnJfdmFsdWVfMiA9IHdlYlJPanMucHJvY2Vzcyhfd2Vicl9lZGl0b3JfMiwge30pO1xuIn0seyJjZWxsTmFtZSI6IndlYnItd2lkZ2V0LTEiLCJpbmxpbmUiOmZhbHNlLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJ7XG4gIC8vIFdhaXQgZm9yIG91dHB1dCB0byBiZSB3cml0dGVuIHRvIHRoZSBET00sIHRoZW4gdHJpZ2dlciB3aWRnZXQgcmVuZGVyaW5nXG4gIGF3YWl0IF93ZWJyX3ZhbHVlXzE7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4ifSx7ImNlbGxOYW1lIjoid2Vici0xIiwiaW5saW5lIjpmYWxzZSwibWV0aG9kTmFtZSI6ImludGVycHJldCIsInNvdXJjZSI6InZpZXdvZiBfd2Vicl9lZGl0b3JfMSA9IHtcbiAgY29uc3QgeyBXZWJSRXhlcmNpc2VFZGl0b3IsIGI2NERlY29kZSB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3Qgc2NyaXB0Q29udGVudCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoYHNjcmlwdFt0eXBlPVxcXCJ3ZWJyLTEtY29udGVudHNcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBibG9jayA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKHNjcmlwdENvbnRlbnQpKTtcblxuICBjb25zdCBvcHRpb25zID0gT2JqZWN0LmFzc2lnbih7IGlkOiBgd2Vici0xLWNvbnRlbnRzYCB9LCBibG9jay5hdHRyKTtcbiAgY29uc3QgZWRpdG9yID0gbmV3IFdlYlJFeGVyY2lzZUVkaXRvcih3ZWJST2pzLndlYlJQcm9taXNlLCBibG9jay5jb2RlLCBvcHRpb25zKTtcblxuICByZXR1cm4gZWRpdG9yLmNvbnRhaW5lcjtcbn1cbl93ZWJyX3ZhbHVlXzEgPSB3ZWJST2pzLnByb2Nlc3MoX3dlYnJfZWRpdG9yXzEsIHt9KTtcbiJ9LHsiY2VsbE5hbWUiOiJ3ZWJyLXByZWx1ZGUiLCJpbmxpbmUiOmZhbHNlLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJ3ZWJST2pzID0ge1xuICBjb25zdCB7IFdlYlIsIENoYW5uZWxUeXBlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lLldlYlI7XG4gIGNvbnN0IHtcbiAgICBXZWJSRXZhbHVhdG9yLFxuICAgIFdlYlJFbnZpcm9ubWVudE1hbmFnZXIsXG4gICAgc2V0dXBSLFxuICAgIGI2NERlY29kZSxcbiAgICBjb2xsYXBzZVBhdGhcbiAgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG5cbiAgY29uc3Qgc3RhdHVzQ29udGFpbmVyID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoXCJleGVyY2lzZS1sb2FkaW5nLXN0YXR1c1wiKTtcbiAgY29uc3QgaW5kaWNhdG9yQ29udGFpbmVyID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoXCJleGVyY2lzZS1sb2FkaW5nLWluZGljYXRvclwiKTtcbiAgaW5kaWNhdG9yQ29udGFpbmVyLmNsYXNzTGlzdC5yZW1vdmUoXCJkLW5vbmVcIik7XG5cbiAgbGV0IHN0YXR1c1RleHQgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KFwiZGl2XCIpXG4gIHN0YXR1c1RleHQuY2xhc3NMaXN0ID0gXCJleGVyY2lzZS1sb2FkaW5nLWRldGFpbHNcIjtcbiAgc3RhdHVzVGV4dCA9IHN0YXR1c0NvbnRhaW5lci5hcHBlbmRDaGlsZChzdGF0dXNUZXh0KTtcbiAgc3RhdHVzVGV4dC50ZXh0Q29udGVudCA9IGBJbml0aWFsaXNlYDtcblxuICAvLyBIb2lzdCBpbmRpY2F0b3Igb3V0IGZyb20gZmluYWwgc2xpZGUgd2hlbiBydW5uaW5nIHVuZGVyIHJldmVhbFxuICBjb25zdCByZXZlYWxTdGF0dXMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKFwiLnJldmVhbCAuZXhlcmNpc2UtbG9hZGluZy1pbmRpY2F0b3JcIik7XG4gIGlmIChyZXZlYWxTdGF0dXMpIHtcbiAgICByZXZlYWxTdGF0dXMucmVtb3ZlKCk7XG4gICAgZG9jdW1lbnQucXVlcnlTZWxlY3RvcihcIi5yZXZlYWwgPiAuc2xpZGVzXCIpLmFwcGVuZENoaWxkKHJldmVhbFN0YXR1cyk7XG4gIH1cblxuICAvLyBNYWtlIGFueSByZXZlYWwgc2xpZGVzIHdpdGggbGl2ZSBjZWxscyBzY3JvbGxhYmxlXG4gIGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3JBbGwoXCIucmV2ZWFsIC5leGVyY2lzZS1jZWxsXCIpLmZvckVhY2goKGVsKSA9PiB7XG4gICAgZWwuY2xvc2VzdCgnc2VjdGlvbi5zbGlkZScpLmNsYXNzTGlzdC5hZGQoXCJzY3JvbGxhYmxlXCIpO1xuICB9KVxuXG4gIC8vIHdlYlIgc3VwcGxlbWVudGFsIGRhdGEgYW5kIG9wdGlvbnNcbiAgY29uc3QgZGF0YUNvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici1kYXRhXFxcIl1gKS50ZXh0Q29udGVudDtcbiAgY29uc3QgZGF0YSA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKGRhdGFDb250ZW50KSk7XG5cbiAgLy8gR3JhYiBsaXN0IG9mIHJlc291cmNlcyB0byBiZSBkb3dubG9hZGVkXG4gIGNvbnN0IGZpbGVzQ29udGVudCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoYHNjcmlwdFt0eXBlPVxcXCJ2ZnMtZmlsZVxcXCJdYCkudGV4dENvbnRlbnQ7XG4gIGNvbnN0IGZpbGVzID0gSlNPTi5wYXJzZShiNjREZWNvZGUoZmlsZXNDb250ZW50KSk7XG5cbiAgLy8gSW5pdGlhbGlzZSB3ZWJSIGFuZCBzZXR1cCBmb3IgUiBjb2RlIGV2YWx1YXRpb25cbiAgbGV0IHdlYlJQcm9taXNlID0gKGFzeW5jICh3ZWJSKSA9PiB7XG4gICAgc3RhdHVzVGV4dC50ZXh0Q29udGVudCA9IGBEb3dubG9hZGluZyB3ZWJSYDtcbiAgICBhd2FpdCB3ZWJSLmluaXQoKTtcblxuICAgIC8vIEluc3RhbGwgcHJvdmlkZWQgbGlzdCBvZiBwYWNrYWdlc1xuICAgIC8vIEVuc3VyZSB3ZWJSIGRlZmF1bHQgcmVwbyBpcyBpbmNsdWRlZFxuICAgIGRhdGEucGFja2FnZXMucmVwb3MucHVzaChcImh0dHBzOi8vcmVwby5yLXdhc20ub3JnXCIpXG4gICAgYXdhaXQgZGF0YS5wYWNrYWdlcy5wa2dzLm1hcCgocGtnKSA9PiAoKSA9PiB7XG4gICAgICBzdGF0dXNUZXh0LnRleHRDb250ZW50ID0gYERvd25sb2FkaW5nIHBhY2thZ2U6ICR7cGtnfWA7XG4gICAgICByZXR1cm4gd2ViUi5ldmFsUlZvaWQoYFxuICAgICAgICB3ZWJyOjppbnN0YWxsKHBrZywgcmVwb3MgPSByZXBvcylcbiAgICAgICAgbGlicmFyeShwa2csIGNoYXJhY3Rlci5vbmx5ID0gVFJVRSlcbiAgICAgIGAsIHsgZW52OiB7XG4gICAgICAgIHBrZzogcGtnLFxuICAgICAgICByZXBvczogZGF0YS5wYWNrYWdlcy5yZXBvcyxcbiAgICAgIH19KTtcbiAgICB9KS5yZWR1Y2UoKGN1ciwgbmV4dCkgPT4gY3VyLnRoZW4obmV4dCksIFByb21pc2UucmVzb2x2ZSgpKTtcblxuICAgIC8vIERvd25sb2FkIGFuZCBpbnN0YWxsIHJlc291cmNlc1xuICAgIGF3YWl0IGZpbGVzLm1hcCgoZmlsZSkgPT4gYXN5bmMgKCkgPT4ge1xuICAgICAgY29uc3QgbmFtZSA9IGZpbGUuc3Vic3RyaW5nKGZpbGUubGFzdEluZGV4T2YoJy8nKSArIDEpO1xuICAgICAgc3RhdHVzVGV4dC50ZXh0Q29udGVudCA9IGBEb3dubG9hZGluZyByZXNvdXJjZTogJHtuYW1lfWA7XG4gICAgICBjb25zdCByZXNwb25zZSA9IGF3YWl0IGZldGNoKGZpbGUpO1xuICAgICAgaWYgKCFyZXNwb25zZS5vaykge1xuICAgICAgICB0aHJvdyBuZXcgRXJyb3IoYENhbid0IGRvd25sb2FkIFxcYCR7ZmlsZX1cXGAuIEVycm9yICR7cmVzcG9uc2Uuc3RhdHVzfTogXCIke3Jlc3BvbnNlLnN0YXR1c1RleHR9XCIuYCk7XG4gICAgICB9XG4gICAgICBjb25zdCBkYXRhID0gYXdhaXQgcmVzcG9uc2UuYXJyYXlCdWZmZXIoKTtcblxuICAgICAgLy8gU3RvcmUgVVJMcyBpbiB0aGUgY3dkIHdpdGhvdXQgYW55IHN1YmRpcmVjdG9yeSBzdHJ1Y3R1cmVcbiAgICAgIGlmIChmaWxlLmluY2x1ZGVzKFwiOi8vXCIpKSB7XG4gICAgICAgIGZpbGUgPSBuYW1lO1xuICAgICAgfVxuXG4gICAgICAvLyBDb2xsYXBzZSBoaWdoZXIgZGlyZWN0b3J5IHN0cnVjdHVyZVxuICAgICAgZmlsZSA9IGNvbGxhcHNlUGF0aChmaWxlKTtcblxuICAgICAgLy8gQ3JlYXRlIGRpcmVjdG9yeSB0cmVlLCBpZ25vcmluZyBcImRpcmVjdG9yeSBleGlzdHNcIiBWRlMgZXJyb3JzXG4gICAgICBjb25zdCBwYXJ0cyA9IGZpbGUuc3BsaXQoJy8nKS5zbGljZSgwLCAtMSk7XG4gICAgICBsZXQgcGF0aCA9ICcnO1xuICAgICAgd2hpbGUgKHBhcnRzLmxlbmd0aCA+IDApIHtcbiAgICAgICAgcGF0aCArPSBwYXJ0cy5zaGlmdCgpICsgJy8nO1xuICAgICAgICBjb25zdCBhbmFseXNpcyA9IGF3YWl0IHdlYlIuRlMuYW5hbHl6ZVBhdGgocGF0aCk7XG4gICAgICAgIGlmICghYW5hbHlzaXMuZXhpc3RzKSB7XG4gICAgICAgICAgdHJ5IHtcbiAgICAgICAgICAgIGF3YWl0IHdlYlIuRlMubWtkaXIocGF0aCk7XG4gICAgICAgICAgfSBjYXRjaCAoZSkge1xuICAgICAgICAgICAgdGhyb3cgbmV3IEVycm9yKGBGaWxlc3lzdGVtIEVycm9yOiBcIiR7ZS5tZXNzYWdlfVwiLmApO1xuICAgICAgICAgIH1cbiAgICAgICAgfVxuICAgICAgfVxuXG4gICAgICAvLyBXcml0ZSB0aGlzIGZpbGUgdG8gdGhlIFZGU1xuICAgICAgcmV0dXJuIGF3YWl0IHdlYlIuRlMud3JpdGVGaWxlKGZpbGUsIG5ldyBVaW50OEFycmF5KGRhdGEpKTtcbiAgICB9KS5yZWR1Y2UoKGN1ciwgbmV4dCkgPT4gY3VyLnRoZW4obmV4dCksIFByb21pc2UucmVzb2x2ZSgpKTtcblxuICAgIHN0YXR1c1RleHQudGV4dENvbnRlbnQgPSBgSW5zdGFsbGluZyB3ZWJSIHNoaW1zYDtcbiAgICBhd2FpdCB3ZWJSLmV2YWxSVm9pZChgd2Vicjo6c2hpbV9pbnN0YWxsKClgKTtcblxuICAgIHN0YXR1c1RleHQudGV4dENvbnRlbnQgPSBgV2ViUiBlbnZpcm9ubWVudCBzZXR1cGA7XG4gICAgYXdhaXQgc2V0dXBSKHdlYlIsIGRhdGEpO1xuXG4gICAgc3RhdHVzVGV4dC5yZW1vdmUoKTtcbiAgICBpZiAoc3RhdHVzQ29udGFpbmVyLmNoaWxkcmVuLmxlbmd0aCA9PSAwKSB7XG4gICAgICBzdGF0dXNDb250YWluZXIucGFyZW50Tm9kZS5yZW1vdmUoKTtcbiAgICB9XG4gICAgcmV0dXJuIHdlYlI7XG4gIH0pKG5ldyBXZWJSKGRhdGEub3B0aW9ucykpO1xuXG4gIC8vIEtlZXAgdHJhY2sgb2YgaW5pdGlhbCBPSlMgYmxvY2sgcmVuZGVyXG4gIGNvbnN0IHJlbmRlcmVkT2pzID0ge307XG5cbiAgY29uc3QgcHJvY2VzcyA9IGFzeW5jIChjb250ZXh0LCBpbnB1dHMpID0+IHtcbiAgICBjb25zdCB3ZWJSID0gYXdhaXQgd2ViUlByb21pc2U7XG4gICAgY29uc3QgZXZhbHVhdG9yID0gbmV3IFdlYlJFdmFsdWF0b3Iod2ViUiwgY29udGV4dClcbiAgICBhd2FpdCBldmFsdWF0b3IucHJvY2VzcyhpbnB1dHMpO1xuICAgIHJldHVybiBldmFsdWF0b3IuY29udGFpbmVyO1xuICB9XG5cbiAgcmV0dXJuIHtcbiAgICBwcm9jZXNzLFxuICAgIHdlYlJQcm9taXNlLFxuICAgIHJlbmRlcmVkT2pzLFxuICB9O1xufVxuIn1dfQ==
+</script>
+<div id="exercise-loading-indicator" class="exercise-loading-indicator d-none d-flex align-items-center gap-2">
+<div id="exercise-loading-status" class="d-flex gap-2">
+
+</div>
+<div class="spinner-grow spinner-grow-sm">
+
+</div>
+</div>
+<script type="vfs-file">
+WyJSL21ldGFkYXRhLlIiLCJkYXRhL3RwYV9kcy5yZHMiXQ==
+</script>
+</section>
+
+</main> <!-- /main -->
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W119
+</script>
+<script type="module">
+if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
+window._ojs.paths.runtimeToDoc = "../..";
+window._ojs.paths.runtimeToRoot = "../..";
+window._ojs.paths.docToRoot = "";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/ktwiener\.github\.io\/ps-workshop-2026\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

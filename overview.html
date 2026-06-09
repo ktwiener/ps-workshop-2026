@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Modern Uses of Propensity Scores – Modern uses of propensity scores</title>
+<title>Background and Objective – Modern uses of propensity scores</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,41 +19,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -104,6 +69,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -117,7 +111,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Introduction</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./overview.html">Example Overview</a></li><li class="breadcrumb-item"><a href="./overview.html">Background and Objective</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -144,7 +138,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Introduction</span></a>
   </div>
 </li>
@@ -159,7 +153,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./overview.html" class="sidebar-item-text sidebar-link">
+  <a href="./overview.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Background and Objective</span></a>
   </div>
 </li>
@@ -210,20 +204,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#about-this-workshop" id="toc-about-this-workshop" class="nav-link active" data-scroll-target="#about-this-workshop">About This Workshop</a></li>
-  <li><a href="#workshop-structure" id="toc-workshop-structure" class="nav-link" data-scroll-target="#workshop-structure">Workshop Structure</a></li>
-  <li><a href="#how-to-use-this-site" id="toc-how-to-use-this-site" class="nav-link" data-scroll-target="#how-to-use-this-site">How to Use This Site</a></li>
-  <li><a href="#instructors" id="toc-instructors" class="nav-link" data-scroll-target="#instructors">Instructors</a></li>
+  <li><a href="#clinical-background" id="toc-clinical-background" class="nav-link active" data-scroll-target="#clinical-background">Clinical Background</a>
+  <ul class="collapse">
+  <li><a href="#objective" id="toc-objective" class="nav-link" data-scroll-target="#objective">Objective</a></li>
+  </ul></li>
+  <li><a href="#why-observational-data-is-challenging" id="toc-why-observational-data-is-challenging" class="nav-link" data-scroll-target="#why-observational-data-is-challenging">Why Observational Data Is Challenging</a>
+  <ul class="collapse">
+  <li><a href="#the-counterfactual-framework" id="toc-the-counterfactual-framework" class="nav-link" data-scroll-target="#the-counterfactual-framework">The Counterfactual Framework</a></li>
+  <li><a href="#identification-conditions" id="toc-identification-conditions" class="nav-link" data-scroll-target="#identification-conditions">Identification Conditions</a></li>
+  </ul></li>
+  <li><a href="#propensity-scores" id="toc-propensity-scores" class="nav-link" data-scroll-target="#propensity-scores">Propensity Scores</a>
+  <ul class="collapse">
+  <li><a href="#variable-selection" id="toc-variable-selection" class="nav-link" data-scroll-target="#variable-selection">Variable Selection</a></li>
+  <li><a href="#diagnostics" id="toc-diagnostics" class="nav-link" data-scroll-target="#diagnostics">Diagnostics</a></li>
+  </ul></li>
+  <li><a href="#inverse-probability-of-treatment-weighting" id="toc-inverse-probability-of-treatment-weighting" class="nav-link" data-scroll-target="#inverse-probability-of-treatment-weighting">Inverse Probability of Treatment Weighting</a>
+  <ul class="collapse">
+  <li><a href="#estimands-and-their-weights" id="toc-estimands-and-their-weights" class="nav-link" data-scroll-target="#estimands-and-their-weights">Estimands and Their Weights</a></li>
+  <li><a href="#why-does-the-estimand-matter-here" id="toc-why-does-the-estimand-matter-here" class="nav-link" data-scroll-target="#why-does-the-estimand-matter-here">Why Does the Estimand Matter Here?</a></li>
+  </ul></li>
+  <li><a href="#standard-error-estimation" id="toc-standard-error-estimation" class="nav-link" data-scroll-target="#standard-error-estimation">Standard Error Estimation</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./overview.html">Example Overview</a></li><li class="breadcrumb-item"><a href="./overview.html">Background and Objective</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Modern Uses of Propensity Scores</h1>
-<p class="subtitle lead">Weighting, estimands, and moving beyond the bootstrap</p>
+<h1 class="title">Background and Objective</h1>
 </div>
 
 
@@ -240,74 +249,96 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Welcome to the companion website for the <strong>SER 2026 Propensity Score Workshop</strong>.</p>
-<section id="about-this-workshop" class="level2">
-<h2 class="anchored" data-anchor-id="about-this-workshop">About This Workshop</h2>
-<p>This workshop covers modern uses of propensity score methods in epidemiology, with a focus on:</p>
+<section id="clinical-background" class="level1">
+<h1>Clinical Background</h1>
+<p>Tissue plasminogen activator (t-PA) is a thrombolytic agent that breaks down blood clots and has become a standard treatment for acute ischemic stroke. Despite demonstrated benefit in randomized trials, early observational studies from community hospitals found roughly a two-fold increase in in-hospital mortality among patients treated with t-PA — the opposite of what the trials showed.</p>
+<p>From three RCTs, the pooled Mantel-Haenszel relative risk estimate for t-PA and death is <strong>1.16 (95% CI: 0.95–1.43)</strong> — consistent with no association. The observational data, however, told a different story, raising an important question: what is driving the discrepancy?</p>
+<section id="objective" class="level2">
+<h2 class="anchored" data-anchor-id="objective">Objective</h2>
+<p>To estimate the effect of t-PA treatment on in-hospital mortality among patients with acute ischemic stroke using observational data, while carefully accounting for confounding.</p>
+<hr>
+</section>
+</section>
+<section id="why-observational-data-is-challenging" class="level1">
+<h1>Why Observational Data Is Challenging</h1>
+<p>In a randomized trial, the study design ensures that treated and untreated groups are comparable in expectation — both for measured and unmeasured characteristics. In observational settings, treatment is not randomly assigned, and patients who receive t-PA may differ systematically from those who do not in ways that also affect mortality (e.g., stroke severity, age, comorbidities).</p>
+<p>This is <strong>confounding</strong>: the exposure–outcome association is distorted because confounders influence both who receives treatment and who dies.</p>
+<section id="the-counterfactual-framework" class="level2">
+<h2 class="anchored" data-anchor-id="the-counterfactual-framework">The Counterfactual Framework</h2>
+<p>Causal inference asks: what would have happened to each patient had they received (or not received) t-PA? We cannot observe both potential outcomes for the same person — this is the <em>fundamental problem of causal inference</em>.</p>
+<p>Let <span class="math inline">\(A\)</span> denote treatment (1 = t-PA, 0 = no t-PA) and <span class="math inline">\(Y\)</span> the outcome (1 = in-hospital death). Define <span class="math inline">\(Y^{a=1}\)</span> as the outcome that <em>would</em> occur if the person received t-PA, and <span class="math inline">\(Y^{a=0}\)</span> as the outcome under no t-PA. The individual causal effect is <span class="math inline">\(Y_i^{a=1} - Y_i^{a=0}\)</span>, but we observe only one of these.</p>
+<p>Instead, we target the <strong>average treatment effect (ATE)</strong>:</p>
+<p><span class="math display">\[\text{ATE} = E\left[Y^{a=1} - Y^{a=0}\right]\]</span></p>
+<p>the average effect had <em>everyone</em> in the population received t-PA versus had <em>no one</em> received t-PA.</p>
+</section>
+<section id="identification-conditions" class="level2">
+<h2 class="anchored" data-anchor-id="identification-conditions">Identification Conditions</h2>
+<p>To estimate causal effects from observational data, we need three conditions to hold:</p>
+<ol type="1">
+<li><p><strong>Conditional exchangeability</strong> (no unmeasured confounding): <span class="math inline">\(Y^{a=1}, Y^{a=0} \perp\!\!\!\perp A \mid \mathbf{L}\)</span> Among people with the same covariate values <span class="math inline">\(\mathbf{L}\)</span>, treatment assignment is unrelated to potential outcomes. In other words, we have measured all confounders.</p></li>
+<li><p><strong>Consistency</strong>: <span class="math inline">\(Y = Y^{a=1} A + Y^{a=0}(1-A)\)</span> The observed outcome under treatment <span class="math inline">\(A=a\)</span> equals the potential outcome <span class="math inline">\(Y^{a}\)</span>.</p></li>
+<li><p><strong>Positivity</strong>: <span class="math inline">\(P[A=a \mid \mathbf{L}] &gt; 0\)</span> for all <span class="math inline">\(l\)</span> where <span class="math inline">\(f(l) &gt; 0\)</span> Every person, regardless of covariate values, has some non-zero probability of receiving each treatment level. Without this, some covariate patterns are only observed under one treatment, making causal comparison impossible.</p></li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="propensity-scores" class="level1">
+<h1>Propensity Scores</h1>
+<p>The <strong>propensity score</strong> is the probability of receiving treatment conditional on observed covariates:</p>
+<p><span class="math display">\[e(\mathbf{L}) = P[A = 1 \mid \mathbf{L}]\]</span></p>
+<p>It was introduced by Rosenbaum and Rubin (1983) as a <em>balancing score</em>: if the full covariate vector <span class="math inline">\(\mathbf{L}\)</span> is sufficient to achieve conditional exchangeability, so is the scalar propensity score. This is powerful because it collapses a high-dimensional set of confounders into a single number.</p>
+<p>In practice, the propensity score is estimated — typically using logistic regression:</p>
+<p><span class="math display">\[\text{logit}\left[\hat{e}(\mathbf{L})\right] = \alpha_0 + \boldsymbol{\alpha}^T \mathbf{L}\]</span></p>
+<section id="variable-selection" class="level2">
+<h2 class="anchored" data-anchor-id="variable-selection">Variable Selection</h2>
+<p>Variables included in the propensity score model should be:</p>
 <ul>
-<li>Weighting approaches to estimate marginal causal effects (ATE, ATT, ATU)</li>
-<li>Choosing the right estimand for your research question</li>
-<li>Standard error estimation beyond the bootstrap: sandwich variance and M-estimation</li>
+<li><strong>Confounders</strong>: causes of both treatment and outcome</li>
+<li><strong>Outcome predictors</strong>: variables associated with the outcome even if not with treatment (improves precision)</li>
+<li><strong>Excluded</strong>: mediators (on the causal pathway from treatment to outcome), pure instruments (causes of treatment only — including them can increase variance without reducing bias)</li>
 </ul>
-<p>The workshop alternates between didactic sessions and hands-on activities. This site hosts the activity materials. Each activity page contains live, runnable R code — no local R installation needed. When you load an activity page, the necessary packages download automatically in the background. Once ready, click <strong>Run</strong> on any code block to execute it.</p>
+<p>Variable selection should be guided by a causal diagram (DAG), not by data-driven criteria like stepwise selection.</p>
 </section>
-<section id="workshop-structure" class="level2">
-<h2 class="anchored" data-anchor-id="workshop-structure">Workshop Structure</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 40%">
-<col style="width: 60%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Time</th>
-<th>Session</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Introduction</td>
-<td>Clinical problem and descriptive analysis → <strong>Activity 1</strong></td>
-</tr>
-<tr class="even">
-<td>Didactics</td>
-<td>Causal inference, estimands, propensity scores, IPTW</td>
-</tr>
-<tr class="odd">
-<td>Estimation</td>
-<td>Propensity score estimation and weighted analyses → <strong>Activity 2</strong></td>
-</tr>
-<tr class="even">
-<td>Break</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>Didactics</td>
-<td>Standard error estimation</td>
-</tr>
-<tr class="even">
-<td>Inference</td>
-<td>Robust variance, bootstrap, M-estimation → <strong>Activity 3</strong></td>
-</tr>
-<tr class="odd">
-<td>Closing</td>
-<td>Questions and discussion</td>
-</tr>
-</tbody>
-</table>
+<section id="diagnostics" class="level2">
+<h2 class="anchored" data-anchor-id="diagnostics">Diagnostics</h2>
+<p>After estimating propensity scores, always examine:</p>
+<ul>
+<li><strong>Distribution</strong>: Do treated and untreated groups have similar propensity score ranges? Lack of overlap suggests positivity violations.</li>
+<li><strong>Balance</strong>: After applying weights, do covariate distributions look similar across treatment groups? Standardized mean differences (SMDs) below 0.1 are a common target.</li>
+</ul>
+<hr>
 </section>
-<section id="how-to-use-this-site" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-use-this-site">How to Use This Site</h2>
-<p>Navigate using the sidebar on the left. Start with the <strong>Example Overview</strong> pages for background on the clinical question and data. Then work through the <strong>Activities</strong> in order — each activity builds on the previous one.</p>
-<p>Code blocks look like this and have a <strong>Run</strong> button:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example — click Run to execute</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>You can modify the code and re-run it. This is a sandbox — experiment freely.</p>
 </section>
-<section id="instructors" class="level2">
-<h2 class="anchored" data-anchor-id="instructors">Instructors</h2>
-<p>Timothy Feeney, Catherine Wiener, and Tobias Kurth</p>
-<p><em>UNC Chapel Hill and Charité Berlin</em></p>
+<section id="inverse-probability-of-treatment-weighting" class="level1">
+<h1>Inverse Probability of Treatment Weighting</h1>
+<p>One of the primary uses of the propensity score is to construct <strong>inverse probability of treatment weights (IPTW)</strong> that create a pseudo-population in which confounders are balanced across treatment groups.</p>
+<p>The intuition: if a treated person had only a 10% probability of treatment given their covariates, upweighting them by <span class="math inline">\(1/0.10 = 10\)</span> makes them represent ten similar people — including the nine who (with their same covariate profile) were not treated. After reweighting the full sample this way, the pseudo-population has no measured confounding.</p>
+<section id="estimands-and-their-weights" class="level2">
+<h2 class="anchored" data-anchor-id="estimands-and-their-weights">Estimands and Their Weights</h2>
+<p>Different research questions call for different estimands, each with a corresponding weighting scheme.</p>
+<p><strong>Average Treatment Effect (ATE)</strong> — the effect had <em>everyone</em> been treated vs.&nbsp;had <em>no one</em> been treated:</p>
+<p><span class="math display">\[\hat{\omega}_{i,\text{IPT}} = \frac{I(A_i=1)}{\hat{e}(\mathbf{L}_i)} + \frac{I(A_i=0)}{1-\hat{e}(\mathbf{L}_i)}\]</span></p>
+<p><strong>Average Treatment Effect in the Treated (ATT)</strong> — the effect among people <em>who were actually treated</em>:</p>
+<p><span class="math display">\[\hat{\omega}_{i,\text{SMR}} = I(A_i=1) + \frac{I(A_i=0)\,\hat{e}(\mathbf{L}_i)}{1-\hat{e}(\mathbf{L}_i)}\]</span></p>
+<p>Treated observations keep weight 1; untreated observations are upweighted by their odds of treatment, making them resemble the treated group.</p>
+<p><strong>Average Treatment Effect in the Untreated (ATU)</strong> — the effect among people <em>who were not treated</em>:</p>
+<p><span class="math display">\[\hat{\omega}_{i,\text{SRR}} = \frac{I(A_i=1)\left[1-\hat{e}(\mathbf{L}_i)\right]}{\hat{e}(\mathbf{L}_i)} + I(A_i=0)\]</span></p>
+</section>
+<section id="why-does-the-estimand-matter-here" class="level2">
+<h2 class="anchored" data-anchor-id="why-does-the-estimand-matter-here">Why Does the Estimand Matter Here?</h2>
+<p>In the t-PA context, consider who actually receives t-PA: patients who arrive at the hospital quickly after symptom onset, have confirmed ischemic stroke, and lack contraindications. This is a clinically selected group. The ATE asks about the effect if <em>everyone</em> with a stroke received t-PA — including patients for whom t-PA is contraindicated. The ATT asks about the effect in people <em>similar to those who actually received it</em>, which may be more clinically actionable.</p>
+<hr>
+</section>
+</section>
+<section id="standard-error-estimation" class="level1">
+<h1>Standard Error Estimation</h1>
+<p>Estimating standard errors (SEs) for weighted estimates is non-trivial: the weights are estimated from data, and this estimation step contributes uncertainty that naive model-based SEs ignore.</p>
+<p>Three approaches are covered in this workshop:</p>
+<ol type="1">
+<li><p><strong>Robust (sandwich) variance</strong>: A fast, closed-form estimator that treats the weights as fixed and known. Conservative for the ATE; may be conservative or anti-conservative for the ATT.</p></li>
+<li><p><strong>Bootstrap</strong>: Resamples the full dataset and re-estimates everything — propensity scores, weights, and outcome model — on each resample. Captures all sources of variability. Computationally expensive.</p></li>
+<li><p><strong>M-estimation</strong>: Stacks estimating equations for the propensity score model and the outcome model, then analytically propagates uncertainty through all steps. Computationally efficient and asymptotically valid.</p></li>
+</ol>
 
 
 </section>

@@ -1,0 +1,356 @@
+[
+  {
+    "objectID": "overview.html",
+    "href": "overview.html",
+    "title": "Background and Objective",
+    "section": "",
+    "text": "Tissue plasminogen activator (t-PA) is a thrombolytic agent that breaks down blood clots and has become a standard treatment for acute ischemic stroke. Despite demonstrated benefit in randomized trials, early observational studies from community hospitals found roughly a two-fold increase in in-hospital mortality among patients treated with t-PA — the opposite of what the trials showed.\nFrom three RCTs, the pooled Mantel-Haenszel relative risk estimate for t-PA and death is 1.16 (95% CI: 0.95–1.43) — consistent with no association. The observational data, however, told a different story, raising an important question: what is driving the discrepancy?\n\n\nTo estimate the effect of t-PA treatment on in-hospital mortality among patients with acute ischemic stroke using observational data, while carefully accounting for confounding.",
+    "crumbs": [
+      "Example Overview",
+      "Background and Objective"
+    ]
+  },
+  {
+    "objectID": "overview.html#objective",
+    "href": "overview.html#objective",
+    "title": "Background and Objective",
+    "section": "",
+    "text": "To estimate the effect of t-PA treatment on in-hospital mortality among patients with acute ischemic stroke using observational data, while carefully accounting for confounding.",
+    "crumbs": [
+      "Example Overview",
+      "Background and Objective"
+    ]
+  },
+  {
+    "objectID": "overview.html#the-counterfactual-framework",
+    "href": "overview.html#the-counterfactual-framework",
+    "title": "Background and Objective",
+    "section": "The Counterfactual Framework",
+    "text": "The Counterfactual Framework\nCausal inference asks: what would have happened to each patient had they received (or not received) t-PA? We cannot observe both potential outcomes for the same person — this is the fundamental problem of causal inference.\nLet \\(A\\) denote treatment (1 = t-PA, 0 = no t-PA) and \\(Y\\) the outcome (1 = in-hospital death). Define \\(Y^{a=1}\\) as the outcome that would occur if the person received t-PA, and \\(Y^{a=0}\\) as the outcome under no t-PA. The individual causal effect is \\(Y_i^{a=1} - Y_i^{a=0}\\), but we observe only one of these.\nInstead, we target the average treatment effect (ATE):\n\\[\\text{ATE} = E\\left[Y^{a=1} - Y^{a=0}\\right]\\]\nthe average effect had everyone in the population received t-PA versus had no one received t-PA.",
+    "crumbs": [
+      "Example Overview",
+      "Background and Objective"
+    ]
+  },
+  {
+    "objectID": "overview.html#identification-conditions",
+    "href": "overview.html#identification-conditions",
+    "title": "Background and Objective",
+    "section": "Identification Conditions",
+    "text": "Identification Conditions\nTo estimate causal effects from observational data, we need three conditions to hold:\n\nConditional exchangeability (no unmeasured confounding): \\(Y^{a=1}, Y^{a=0} \\perp\\!\\!\\!\\perp A \\mid \\mathbf{L}\\) Among people with the same covariate values \\(\\mathbf{L}\\), treatment assignment is unrelated to potential outcomes. In other words, we have measured all confounders.\nConsistency: \\(Y = Y^{a=1} A + Y^{a=0}(1-A)\\) The observed outcome under treatment \\(A=a\\) equals the potential outcome \\(Y^{a}\\).\nPositivity: \\(P[A=a \\mid \\mathbf{L}] &gt; 0\\) for all \\(l\\) where \\(f(l) &gt; 0\\) Every person, regardless of covariate values, has some non-zero probability of receiving each treatment level. Without this, some covariate patterns are only observed under one treatment, making causal comparison impossible.",
+    "crumbs": [
+      "Example Overview",
+      "Background and Objective"
+    ]
+  },
+  {
+    "objectID": "overview.html#variable-selection",
+    "href": "overview.html#variable-selection",
+    "title": "Background and Objective",
+    "section": "Variable Selection",
+    "text": "Variable Selection\nVariables included in the propensity score model should be:\n\nConfounders: causes of both treatment and outcome\nOutcome predictors: variables associated with the outcome even if not with treatment (improves precision)\nExcluded: mediators (on the causal pathway from treatment to outcome), pure instruments (causes of treatment only — including them can increase variance without reducing bias)\n\nVariable selection should be guided by a causal diagram (DAG), not by data-driven criteria like stepwise selection.",
+    "crumbs": [
+      "Example Overview",
+      "Background and Objective"
+    ]
+  },
+  {
+    "objectID": "overview.html#diagnostics",
+    "href": "overview.html#diagnostics",
+    "title": "Background and Objective",
+    "section": "Diagnostics",
+    "text": "Diagnostics\nAfter estimating propensity scores, always examine:\n\nDistribution: Do treated and untreated groups have similar propensity score ranges? Lack of overlap suggests positivity violations.\nBalance: After applying weights, do covariate distributions look similar across treatment groups? Standardized mean differences (SMDs) below 0.1 are a common target.",
+    "crumbs": [
+      "Example Overview",
+      "Background and Objective"
+    ]
+  },
+  {
+    "objectID": "overview.html#estimands-and-their-weights",
+    "href": "overview.html#estimands-and-their-weights",
+    "title": "Background and Objective",
+    "section": "Estimands and Their Weights",
+    "text": "Estimands and Their Weights\nDifferent research questions call for different estimands, each with a corresponding weighting scheme.\nAverage Treatment Effect (ATE) — the effect had everyone been treated vs. had no one been treated:\n\\[\\hat{\\omega}_{i,\\text{IPT}} = \\frac{I(A_i=1)}{\\hat{e}(\\mathbf{L}_i)} + \\frac{I(A_i=0)}{1-\\hat{e}(\\mathbf{L}_i)}\\]\nAverage Treatment Effect in the Treated (ATT) — the effect among people who were actually treated:\n\\[\\hat{\\omega}_{i,\\text{SMR}} = I(A_i=1) + \\frac{I(A_i=0)\\,\\hat{e}(\\mathbf{L}_i)}{1-\\hat{e}(\\mathbf{L}_i)}\\]\nTreated observations keep weight 1; untreated observations are upweighted by their odds of treatment, making them resemble the treated group.\nAverage Treatment Effect in the Untreated (ATU) — the effect among people who were not treated:\n\\[\\hat{\\omega}_{i,\\text{SRR}} = \\frac{I(A_i=1)\\left[1-\\hat{e}(\\mathbf{L}_i)\\right]}{\\hat{e}(\\mathbf{L}_i)} + I(A_i=0)\\]",
+    "crumbs": [
+      "Example Overview",
+      "Background and Objective"
+    ]
+  },
+  {
+    "objectID": "overview.html#why-does-the-estimand-matter-here",
+    "href": "overview.html#why-does-the-estimand-matter-here",
+    "title": "Background and Objective",
+    "section": "Why Does the Estimand Matter Here?",
+    "text": "Why Does the Estimand Matter Here?\nIn the t-PA context, consider who actually receives t-PA: patients who arrive at the hospital quickly after symptom onset, have confirmed ischemic stroke, and lack contraindications. This is a clinically selected group. The ATE asks about the effect if everyone with a stroke received t-PA — including patients for whom t-PA is contraindicated. The ATT asks about the effect in people similar to those who actually received it, which may be more clinically actionable.",
+    "crumbs": [
+      "Example Overview",
+      "Background and Objective"
+    ]
+  },
+  {
+    "objectID": "data_dictionary.html",
+    "href": "data_dictionary.html",
+    "title": "Data",
+    "section": "",
+    "text": "Data Source\n\nOriginates from the Westphalian Stroke Register: regional data bank in the northwest of Germany\nOn a voluntary basis, 24 neurological, 13 internal medicine and 5 geriatric medicine departments in 42 hospitals participated in the project in 2000 and 2001\nIncluded patients treated for a transient ischemic attack, ischemic stroke or intracerebral hemorrhage\nSociodemographic characteristics, cerebrovascular risk factors, comorbidities, stroke type and severity, as well as details regarding the participating centers, the mode of admission, diagnostic and therapeutic procedures and complications documented\nThe standardized data assessment forms were evaluated centrally at the Institute of Epidemiology and Social Medicine at the University of Muenster, Germany\nIn total, 12,410 patients with stroke symptoms were entered into the registry until 2001: 8,208 were ischemic, 2,794 transient ischemic attacks, 793 primary intracerebral hemorrhages and 615 unknown\nFor this clinical example, only ischemic stroke patients were considered. Furthermore, ischemic stroke patients were excluded from centers that did not perform t-PA lysis throughout the time of observation (2000-2001)\nA total of 6,269 patients were included in the original example. More details of the original sample can be found: Kurth T et al. Results of multivariable logistic regression, propensity matching, propensity adjustment, and propensity-based weighting under conditions of nonuniform effect. Am J Epidemiol. 2006 Feb 1;163(3):262–70.\nThe data set we use in this lab is a randomly modified dataset. Therefore, some of the association pattern behaves differently than clinically expected. The total number of observations in this dataset is set to 10,000.\nThis data set is for your personal use only. Please do not share it outside of class.\n\n\n\nData Dictionary\n\n\n\n\n\n\n\n\n\nVariable Name\nVariable Label\nVariable Type\nValues\n\n\n\n\nafib\nAtrial fibrillation\nbinary\n1 = Yes\n0 = No\n\n\nage\nAge\nnumeric\n14 - 100\n\n\naphasia\nAphasia\nbinary\n1 = Yes\n0 = No\n\n\ncardiac\nHistory of cardiovascular disease\nbinary\n1 = Yes\n0 = No\n\n\ncomorbid\nComorbidity\nbinary\n1 = Yes\n0 = No\n\n\ndeath\nDeath\nbinary\n1 = Yes\n0 = No\n\n\nhtn\nHypertension\nbinary\n1 = Yes\n0 = No\n\n\nhyperchol\nHypercholesterolemia\nbinary\n1 = Yes\n0 = No\n\n\nicu\nICU admission\nbinary\n1 = Yes\n0 = No\n\n\nliving\nLiving situation\nfactor\n1 = At home\n2 = In institution\n\n\nparesis\nParesis\nfactor\n0 = No\n1 = Monoparesis\n2 = Hemiplegia\n3 = Tetraplegia\n\n\nparesis\nParesis\nfactor\n0 = No\n1 = Mild\n2 = Severe\n3 = Severe\n\n\nprevstroke\nHistory of stroke\nbinary\n1 = Yes\n0 = No\n\n\nrankpre\nRankin Scale at Admission\nfactor\n0 = No symptoms\n1 = No significant disability\n2 = Slight disability\n3 = Moderate disability\n5 = Severe disability\n\n\nsex\nSex\nfactor\n1 = Male\n2 = Female\n\n\ntpa\nTissue plasminogen activator (tPA)\nfactor\n0 = no tPA treatment\n1 = tPA treatment\n\n\ntpa\ntPA\nbinary\n1 = Yes\n0 = No",
+    "crumbs": [
+      "Example Overview",
+      "Data"
+    ]
+  },
+  {
+    "objectID": "activity-2.html",
+    "href": "activity-2.html",
+    "title": "Activity 2",
+    "section": "",
+    "text": "In Activity 2, we estimate the propensity score, construct inverse probability of treatment weights for different estimands, assess balance after weighting, and estimate marginal causal effects.",
+    "crumbs": [
+      "Activities",
+      "Activity 2"
+    ]
+  },
+  {
+    "objectID": "activity-2.html#propensity-score-diagnostics",
+    "href": "activity-2.html#propensity-score-diagnostics",
+    "title": "Activity 2",
+    "section": "Propensity score diagnostics",
+    "text": "Propensity score diagnostics\nExamine the propensity score distribution within each treatment group. Large regions of non-overlap (“lack of positivity”) indicate covariate profiles where only treated or only untreated people appear — causal effects cannot be estimated there without extrapolation.\n\n\n\n\n\n\n\n\n\n\n\n\nWhat do you notice about the overlap? Are there regions of the propensity score where one treatment group is barely represented?",
+    "crumbs": [
+      "Activities",
+      "Activity 2"
+    ]
+  },
+  {
+    "objectID": "activity-2.html#calculate-ipt-weights",
+    "href": "activity-2.html#calculate-ipt-weights",
+    "title": "Activity 2",
+    "section": "Calculate IPT weights",
+    "text": "Calculate IPT weights\n\n\n\n\n\n\nExtreme weights (very large values) indicate near-positivity violations and can inflate variance. How do the unstabilized and stabilized weight distributions compare?",
+    "crumbs": [
+      "Activities",
+      "Activity 2"
+    ]
+  },
+  {
+    "objectID": "activity-2.html#balance-after-ipt-weighting",
+    "href": "activity-2.html#balance-after-ipt-weighting",
+    "title": "Activity 2",
+    "section": "Balance after IPT weighting",
+    "text": "Balance after IPT weighting\nWe check covariate balance in the IPT-weighted pseudo-population. The goal is for SMDs to fall below 0.1 for all covariates.",
+    "crumbs": [
+      "Activities",
+      "Activity 2"
+    ]
+  },
+  {
+    "objectID": "activity-2.html#marginal-structural-model-ate",
+    "href": "activity-2.html#marginal-structural-model-ate",
+    "title": "Activity 2",
+    "section": "Marginal structural model: ATE",
+    "text": "Marginal structural model: ATE\nA marginal structural model (MSM) fits a weighted outcome regression in the pseudo-population created by the weights. The weighted regression estimate is equivalent to the marginal (population-average) causal effect.",
+    "crumbs": [
+      "Activities",
+      "Activity 2"
+    ]
+  },
+  {
+    "objectID": "activity-2.html#calculate-smr-weights",
+    "href": "activity-2.html#calculate-smr-weights",
+    "title": "Activity 2",
+    "section": "Calculate SMR weights",
+    "text": "Calculate SMR weights",
+    "crumbs": [
+      "Activities",
+      "Activity 2"
+    ]
+  },
+  {
+    "objectID": "activity-2.html#balance-after-smr-weighting",
+    "href": "activity-2.html#balance-after-smr-weighting",
+    "title": "Activity 2",
+    "section": "Balance after SMR weighting",
+    "text": "Balance after SMR weighting",
+    "crumbs": [
+      "Activities",
+      "Activity 2"
+    ]
+  },
+  {
+    "objectID": "activity-2.html#marginal-structural-model-att",
+    "href": "activity-2.html#marginal-structural-model-att",
+    "title": "Activity 2",
+    "section": "Marginal structural model: ATT",
+    "text": "Marginal structural model: ATT",
+    "crumbs": [
+      "Activities",
+      "Activity 2"
+    ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "activity-1.html",
+    "href": "activity-1.html",
+    "title": "Activity 1",
+    "section": "",
+    "text": "In Activity 1, we will load the necessary packages, explore the data, compute descriptive statistics, and estimate some basic (unadjusted and multivariable) effect estimates. These will serve as a benchmark to compare against the propensity score estimates in Activity 2.",
+    "crumbs": [
+      "Activities",
+      "Activity 1"
+    ]
+  },
+  {
+    "objectID": "activity-1.html#table-1-baseline-characteristics-by-treatment-group",
+    "href": "activity-1.html#table-1-baseline-characteristics-by-treatment-group",
+    "title": "Activity 1",
+    "section": "Table 1: Baseline characteristics by treatment group",
+    "text": "Table 1: Baseline characteristics by treatment group\nA Table 1 shows the distribution of confounders across treatment groups before any adjustment. Large differences between groups indicate confounding — characteristics associated with both treatment and outcome.\nThe standardized mean difference (SMD) quantifies the imbalance on each covariate: values above 0.1 typically indicate meaningful imbalance.\n\n\n\n\n\n\nWhat do you notice about the covariate distributions? Which variables show the largest imbalance?",
+    "crumbs": [
+      "Activities",
+      "Activity 1"
+    ]
+  },
+  {
+    "objectID": "activity-1.html#crude-analysis",
+    "href": "activity-1.html#crude-analysis",
+    "title": "Activity 1",
+    "section": "Crude analysis",
+    "text": "Crude analysis\n\nRisk difference\nWe use a binomial generalized linear model with an identity link to estimate the crude risk difference. The coefficient on tpa is the difference in risk of death between treated and untreated.\n\n\n\n\n\n\n\n\nRisk ratio\nWe use a binomial GLM with a log link to estimate the crude risk ratio. Because the log-binomial model uses a non-canonical link, it can encounter convergence problems; this is a known limitation.",
+    "crumbs": [
+      "Activities",
+      "Activity 1"
+    ]
+  },
+  {
+    "objectID": "activity-1.html#multivariable-analysis",
+    "href": "activity-1.html#multivariable-analysis",
+    "title": "Activity 1",
+    "section": "Multivariable analysis",
+    "text": "Multivariable analysis\nHere we fit a multivariable log-binomial model adjusting for all confounders. This estimates the conditional risk ratio — the effect of t-PA for a person with a specific covariate profile, rather than the population-average (marginal) effect.\n\n\n\n\n\n\nHow do the crude and multivariable estimates compare? Does adjusting for confounders move the estimate toward or away from the null? Does this surprise you, given what you saw in Table 1?\nKeep these estimates — we will compare them to the propensity score-weighted results in Activity 2.",
+    "crumbs": [
+      "Activities",
+      "Activity 1"
+    ]
+  },
+  {
+    "objectID": "activity-3.html",
+    "href": "activity-3.html",
+    "title": "Activity 3",
+    "section": "",
+    "text": "In Activity 3, we estimate standard errors for the IPT-weighted (ATE) and SMR-weighted (ATT) risk differences using three approaches: the robust sandwich variance, the bootstrap, and M-estimation.\nStandard error estimation for weighted estimators is non-trivial. The weights are themselves estimated quantities, and their uncertainty should be propagated through to the final estimate. The three methods handle this very differently.",
+    "crumbs": [
+      "Activities",
+      "Activity 3"
+    ]
+  },
+  {
+    "objectID": "activity-3.html#set-up-the-data-matrix",
+    "href": "activity-3.html#set-up-the-data-matrix",
+    "title": "Activity 3",
+    "section": "Set up the data matrix",
+    "text": "Set up the data matrix\nWe first create a design matrix with indicator variables for all multi-level covariates. This is needed because the propensity score estimating equations require a numeric design matrix.",
+    "crumbs": [
+      "Activities",
+      "Activity 3"
+    ]
+  },
+  {
+    "objectID": "activity-3.html#define-the-stacked-estimating-function",
+    "href": "activity-3.html#define-the-stacked-estimating-function",
+    "title": "Activity 3",
+    "section": "Define the stacked estimating function",
+    "text": "Define the stacked estimating function\nThe estimating function stacks: 1. Propensity score model (logistic regression score equations — one per PS parameter) 2. IPT-weighted group means (control and treated) 3. ATE risk difference definition: \\(\\theta_{\\text{ATE}} = \\mu_1^{\\text{IPT}} - \\mu_0^{\\text{IPT}}\\) 4. SMR-weighted group means (control and treated) 5. ATT risk difference definition: \\(\\theta_{\\text{ATT}} = \\mu_1^{\\text{SMR}} - \\mu_0^{\\text{SMR}}\\)",
+    "crumbs": [
+      "Activities",
+      "Activity 3"
+    ]
+  },
+  {
+    "objectID": "activity-3.html#solve-the-estimating-equations",
+    "href": "activity-3.html#solve-the-estimating-equations",
+    "title": "Activity 3",
+    "section": "Solve the estimating equations",
+    "text": "Solve the estimating equations\nWe solve the system \\(\\sum_i \\psi(\\mathbf{Y}_i, \\hat{\\boldsymbol{\\theta}}) = \\mathbf{0}\\) using Newton-Raphson iteration with numDeriv::jacobian for the Jacobian. Starting values come from our earlier estimates.",
+    "crumbs": [
+      "Activities",
+      "Activity 3"
+    ]
+  },
+  {
+    "objectID": "activity-3.html#compute-the-sandwich-variance",
+    "href": "activity-3.html#compute-the-sandwich-variance",
+    "title": "Activity 3",
+    "section": "Compute the sandwich variance",
+    "text": "Compute the sandwich variance",
+    "crumbs": [
+      "Activities",
+      "Activity 3"
+    ]
+  },
+  {
+    "objectID": "activity-3.html#discussion",
+    "href": "activity-3.html#discussion",
+    "title": "Activity 3",
+    "section": "Discussion",
+    "text": "Discussion\n\nWhy do the estimates match across methods? All three methods estimate the same quantity; they differ only in how they compute uncertainty.\nRobust sandwich SE: Fast and closed-form, but treats weights as fixed. Generally conservative for the ATE (overestimates SE). For the ATT, it can go either way — see Reifeis & Hudgens (2022) AJE.\nBootstrap SE: Resamples the entire data-generating process, capturing all variability including from estimating the propensity score. Computationally expensive but valid.\nM-estimation SE: Analytically propagates uncertainty from the propensity score model to the outcome, yielding consistent SEs. Efficient (no resampling), but relies on large-sample asymptotics. Can be smaller than the bootstrap when weights are very extreme (like the IPT weights here with a maximum near 500+).\n\nWhen sample sizes are large and weights are not too extreme, all three methods tend to agree. The ATE weights in this dataset are extreme (very large maximum), so you may see differences — particularly for the bootstrap and M-estimation SEs, which properly account for the extra variability introduced by those extreme weights.",
+    "crumbs": [
+      "Activities",
+      "Activity 3"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Modern Uses of Propensity Scores",
+    "section": "",
+    "text": "Welcome to the companion website for the SER 2026 Propensity Score Workshop.",
+    "crumbs": [
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "index.html#about-this-workshop",
+    "href": "index.html#about-this-workshop",
+    "title": "Modern Uses of Propensity Scores",
+    "section": "About This Workshop",
+    "text": "About This Workshop\nThis workshop covers modern uses of propensity score methods in epidemiology, with a focus on:\n\nWeighting approaches to estimate marginal causal effects (ATE, ATT, ATU)\nChoosing the right estimand for your research question\nStandard error estimation beyond the bootstrap: sandwich variance and M-estimation\n\nThe workshop alternates between didactic sessions and hands-on activities. This site hosts the activity materials. Each activity page contains live, runnable R code — no local R installation needed. When you load an activity page, the necessary packages download automatically in the background. Once ready, click Run on any code block to execute it.",
+    "crumbs": [
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "index.html#workshop-structure",
+    "href": "index.html#workshop-structure",
+    "title": "Modern Uses of Propensity Scores",
+    "section": "Workshop Structure",
+    "text": "Workshop Structure\n\n\n\n\n\n\n\nTime\nSession\n\n\n\n\nIntroduction\nClinical problem and descriptive analysis → Activity 1\n\n\nDidactics\nCausal inference, estimands, propensity scores, IPTW\n\n\nEstimation\nPropensity score estimation and weighted analyses → Activity 2\n\n\nBreak\n\n\n\nDidactics\nStandard error estimation\n\n\nInference\nRobust variance, bootstrap, M-estimation → Activity 3\n\n\nClosing\nQuestions and discussion",
+    "crumbs": [
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "index.html#how-to-use-this-site",
+    "href": "index.html#how-to-use-this-site",
+    "title": "Modern Uses of Propensity Scores",
+    "section": "How to Use This Site",
+    "text": "How to Use This Site\nNavigate using the sidebar on the left. Start with the Example Overview pages for background on the clinical question and data. Then work through the Activities in order — each activity builds on the previous one.\nCode blocks look like this and have a Run button:\n# Example — click Run to execute\n1 + 1\nYou can modify the code and re-run it. This is a sandbox — experiment freely.",
+    "crumbs": [
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "index.html#instructors",
+    "href": "index.html#instructors",
+    "title": "Modern Uses of Propensity Scores",
+    "section": "Instructors",
+    "text": "Instructors\nTimothy Feeney, Catherine Wiener, and Tobias Kurth\nUNC Chapel Hill and Charité Berlin",
+    "crumbs": [
+      "Introduction"
+    ]
+  }
+]
