@@ -264,7 +264,7 @@
     "href": "activity-3.html#define-the-stacked-estimating-function",
     "title": "Activity 3",
     "section": "Define the stacked estimating function",
-    "text": "Define the stacked estimating function\nThe estimating function stacks: 1. Propensity score model (logistic regression score equations — one per PS parameter) 2. IPT-weighted group means (control and treated) 3. ATE risk difference definition: \\(\\theta_{\\text{ATE}} = \\mu_1^{\\text{IPT}} - \\mu_0^{\\text{IPT}}\\) 4. SMR-weighted group means (control and treated) 5. ATT risk difference definition: \\(\\theta_{\\text{ATT}} = \\mu_1^{\\text{SMR}} - \\mu_0^{\\text{SMR}}\\)",
+    "text": "Define the stacked estimating function\nThe estimating function stacks:\n\nPropensity score model (logistic regression score equations — one per PS parameter)\nIPT-weighted group means (control and treated)\nATE risk difference definition: \\(\\theta_{\\text{ATE}} = \\mu_1^{\\text{IPT}} - \\mu_0^{\\text{IPT}}\\)\nSMR-weighted group means (control and treated)\nATT risk difference definition: \\(\\theta_{\\text{ATT}} = \\mu_1^{\\text{SMR}} - \\mu_0^{\\text{SMR}}\\)",
     "crumbs": [
       "Activities",
       "Activity 3"
@@ -338,7 +338,7 @@
     "href": "index.html#how-to-use-this-site",
     "title": "Modern Uses of Propensity Scores",
     "section": "How to Use This Site",
-    "text": "How to Use This Site\nNavigate using the sidebar on the left. Start with the Example Overview pages for background on the clinical question and data. Then work through the Activities in order — each activity builds on the previous one.\nCode blocks look like this and have a Run button:\n# Example — click Run to execute\n1 + 1\nYou can modify the code and re-run it. This is a sandbox — experiment freely.",
+    "text": "How to Use This Site\nNavigate using the sidebar on the left. Start with the Example Overview pages for background on the clinical question and data. Then work through the Activities in order — each activity builds on the previous one.\nCode blocks look like this and have a Run button:\n# Example — click Run to execute\n1 + 1\nYou can modify the code and re-run it. This is a sandbox.",
     "crumbs": [
       "Introduction"
     ]
@@ -348,7 +348,7 @@
     "href": "index.html#instructors",
     "title": "Modern Uses of Propensity Scores",
     "section": "Instructors",
-    "text": "Instructors\nTimothy Feeney, Catherine Wiener, and Tobias Kurth\nUNC Chapel Hill and Charité Berlin",
+    "text": "Instructors\nTimothy (Tim) Feeney and Catherine (Catie) Wiener\nJohns Hopkins University and UNC Chapel Hill",
     "crumbs": [
       "Introduction"
     ]
