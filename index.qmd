@@ -31,15 +31,6 @@ The workshop alternates between didactic sessions and hands-on activities. This 
 
 Navigate using the sidebar on the left. Start with the **Example Overview** pages for background on the clinical question and data. Then work through the **Activities** in order — each activity builds on the previous one.
 
-Code blocks look like this and have a **Run** button:
-
-```{webr}
-# Example — click Run to execute
-1 + 1
-```
-
-You can modify the code and re-run it. This is a sandbox. 
-
 ## Instructors
 
 Timothy (Tim) Feeney and Catherine (Catie) Wiener
