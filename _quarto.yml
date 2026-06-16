@@ -1,3 +1,5 @@
+engine: knitr
+
 project:
   type: website
   render:
