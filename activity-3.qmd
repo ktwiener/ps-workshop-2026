@@ -32,7 +32,9 @@ library(kableExtra)
 library(broom)
 library(sandwich)
 library(numDeriv)
+```
 
+```{webr}
 source("R/metadata.R")
 tpa_ds <- readRDS("data/tpa_ds.rds")
 
@@ -88,11 +90,11 @@ The bootstrap resamples the *entire dataset* with replacement and re-estimates e
 
 This correctly captures all sources of variability, including uncertainty from estimating the propensity score. The drawback is computational cost.
 
-**Note:** 500 bootstrap replicates is sufficient for a workshop illustration. In practice, 1000–2000 replicates are typical. This will take a minute or two in the browser — be patient.
+**Note:** 200 bootstrap replicates is sufficient for a workshop illustration and the browser can't take much more. 
 
 ```{webr}
 set.seed(24601)
-B <- 500
+B <- 200
 
 boot_results <- matrix(nrow = B, ncol = 2)  # col 1 = ATE RD, col 2 = ATT RD
 
@@ -176,10 +178,15 @@ cat("Number of PS parameters (including intercept):", ncol(mest_data) - 1, "\n")
 ## Define the stacked estimating function
 
 The estimating function stacks:
+
 1. Propensity score model (logistic regression score equations — one per PS parameter)
+
 2. IPT-weighted group means (control and treated)
+
 3. ATE risk difference definition: $\theta_{\text{ATE}} = \mu_1^{\text{IPT}} - \mu_0^{\text{IPT}}$
+
 4. SMR-weighted group means (control and treated)
+
 5. ATT risk difference definition: $\theta_{\text{ATT}} = \mu_1^{\text{SMR}} - \mu_0^{\text{SMR}}$
 
 ```{webr}
@@ -206,10 +213,10 @@ setup_ef <- function(data) {
     smr <- a + (1 - a) * pscore / (1 - pscore)
 
     ## Estimating equations for weighted group means
-    ef_ipt_mu0  <- ((1 - a) * ipt) * (y - theta_ipt_mu[1])
-    ef_ipt_mu1  <- (a * ipt) * (y - theta_ipt_mu[2])
-    ef_smr_mu0  <- ((1 - a) * smr) * (y - theta_smr_mu[1])
-    ef_smr_mu1  <- (a * smr) * (y - theta_smr_mu[2])
+    ef_ipt_mu0  <- sum(((1 - a) * ipt) * (y - theta_ipt_mu[1]))
+    ef_ipt_mu1  <- sum((a * ipt) * (y - theta_ipt_mu[2]))
+    ef_smr_mu0  <- sum(((1 - a) * smr) * (y - theta_smr_mu[1]))
+    ef_smr_mu1  <- sum((a * smr) * (y - theta_smr_mu[2]))
 
     ## Estimating equations for ATE and ATT risk differences
     ef_ate <- theta_ipt_mu[2] - theta_ipt_mu[1] - theta_ipt_ate

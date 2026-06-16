@@ -33,15 +33,15 @@ Navigate using the sidebar on the left. Start with the **Example Overview** page
 
 Code blocks look like this and have a **Run** button:
 
-```r
+```{webr}
 # Example — click Run to execute
 1 + 1
 ```
 
-You can modify the code and re-run it. This is a sandbox — experiment freely.
+You can modify the code and re-run it. This is a sandbox. 
 
 ## Instructors
 
-Timothy Feeney, Catherine Wiener, and Tobias Kurth
+Timothy (Tim) Feeney and Catherine (Catie) Wiener
 
-*UNC Chapel Hill and Charité Berlin*
+*Johns Hopkins University and UNC Chapel Hill*

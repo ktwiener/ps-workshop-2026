@@ -290,6 +290,20 @@ bind_rows(atu_rd, atu_rr) |>
 A Love plot displays SMDs for all covariates across weighting methods side-by-side. The vertical reference line at 0.1 represents a commonly used threshold for acceptable balance.
 
 ```{webr}
+
+## To build this Love plot, you need the `t1` object from the unweighted Table 1.
+## This requires that the unweighted Table 1 code from Activity 1 has been run 
+## in *this* session. Below we recreate `t1`
+
+t1 <- tableone::CreateTableOne(
+  vars       = confounders,
+  strata     = "tpa_f",
+  data       = tpa_ds_cc,
+  factorVars = conf_cat,
+  smd        = TRUE,
+  test       = FALSE
+)
+
 ## Extract SMDs from tableone objects and label by weight type
 smd_data <- dplyr::bind_rows(
   tableone::ExtractSmd(t1, varLabels = TRUE) |>
@@ -313,20 +327,6 @@ ggplot(smd_data, aes(x = `1 vs 2`, y = variable, color = weight, shape = weight)
 ```
 
 Do both weighting approaches achieve balance (SMD < 0.1)? Are there any covariates that remain imbalanced?
-
-> **Note:** To build this Love plot, you need the `t1` object from the unweighted Table 1. This requires that the unweighted Table 1 code from Activity 1 has been run in *this* session. If you see an error about `t1` not found, run the block below.
-
-```{webr}
-## Run this if t1 is not found above
-t1 <- tableone::CreateTableOne(
-  vars       = confounders,
-  strata     = "tpa_f",
-  data       = tpa_ds_cc,
-  factorVars = conf_cat,
-  smd        = TRUE,
-  test       = FALSE
-)
-```
 
 ---
 
@@ -367,8 +367,6 @@ dplyr::bind_rows(crude_rd, crude_rr, multi_res,
   ) |>
   kable()
 ```
-
-Discuss with your group:
 
 - How do the ATE, ATT, and ATU estimates compare to each other?
 - How do the weighted estimates compare to the crude and multivariable estimates?
