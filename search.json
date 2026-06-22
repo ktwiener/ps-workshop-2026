@@ -328,7 +328,7 @@
     "href": "index.html#materials",
     "title": "Modern Uses of Propensity Scores",
     "section": "Materials",
-    "text": "Materials\nThe code can be run directly in the browser from this website. However, if you’d prefer downloading files and running locally (recommended!), download here:\n\nData\nMetadata helper\nActivity 1\nActivity 2\nActivity 3",
+    "text": "Materials\nThe workshop materials require R and R Studio. Installation instructions here\nThe code can be run directly in the browser from this website. However, if you’d prefer downloading files and running locally (recommended!), download here:\n\nData\nMetadata helper\nActivity 1\nActivity 2\nActivity 3",
     "crumbs": [
       "Introduction"
     ]
