@@ -17,6 +17,8 @@ The workshop alternates between didactic sessions and hands-on activities. This 
 
 ## Materials
 
+The workshop materials require R and R Studio. [Installation instructions here](downloads/install_R_handout.docx){download="install_R_handout.docx"}
+
 The code can be run directly in the browser from this website. However, if you'd prefer downloading files and running locally (recommended!), download here:
 
 - [Data](data/tpa_ds.rds)
