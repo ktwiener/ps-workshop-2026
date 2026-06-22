@@ -15,6 +15,16 @@ This workshop covers modern uses of propensity score methods in epidemiology, wi
 
 The workshop alternates between didactic sessions and hands-on activities. This site hosts the activity materials. Each activity page contains live, runnable R code — no local R installation needed. When you load an activity page, the necessary packages download automatically in the background. Once ready, click **Run** on any code block to execute it.
 
+## Materials
+
+The code can be run directly in the browser from this website. However, if you'd prefer downloading files and running locally (recommended!), download here:
+
+- [Data](data/tpa_ds.rds)
+- [Metadata helper](R/metadata.R)
+- [Activity 1](downloads/activity-1.qmd){download="activity-1.qmd"}
+- [Activity 2](downloads/activity-2.qmd){download="activity-2.qmd"}
+- [Activity 3](downloads/activity-3.qmd){download="activity-3.qmd"}
+
 ## Workshop Structure
 
 | Time | Session |

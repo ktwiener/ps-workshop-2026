@@ -41,8 +41,8 @@ library(tableone)
 library(survey)
 library(smd)
 
-source("R/metadata.R")
-tpa_ds <- readRDS("data/tpa_ds.rds")
+source("metadata.R")
+tpa_ds <- readRDS("tpa_ds.rds")
 
 tpa_ds$age_5f <- cut(tpa_ds$age, breaks = seq(14, 105, by = 5), right = FALSE)
 
