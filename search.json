@@ -103,7 +103,7 @@
     "href": "activity-2.html",
     "title": "Activity 2",
     "section": "",
-    "text": "In Activity 2, we estimate the propensity score, construct inverse probability of treatment weights for different estimands, assess balance after weighting, and estimate marginal causal effects.",
+    "text": "Prefer to work locally? Download the local version — a standard .qmd file with regular R chunks you can run in RStudio or with quarto render. You will also need data/tpa_ds.rds and R/metadata.R.\nIn Activity 2, we estimate the propensity score, construct inverse probability of treatment weights for different estimands, assess balance after weighting, and estimate marginal causal effects.",
     "crumbs": [
       "Activities",
       "Activity 2"
@@ -198,7 +198,7 @@
     "href": "activity-1.html",
     "title": "Activity 1",
     "section": "",
-    "text": "In Activity 1, we will load the necessary packages, explore the data, compute descriptive statistics, and estimate some basic (unadjusted and multivariable) effect estimates. These will serve as a benchmark to compare against the propensity score estimates in Activity 2.",
+    "text": "Prefer to work locally? Download the local version — a standard .qmd file with regular R chunks you can run in RStudio or with quarto render. You will also need data/tpa_ds.rds and R/metadata.R.\nIn Activity 1, we will load the necessary packages, explore the data, compute descriptive statistics, and estimate some basic (unadjusted and multivariable) effect estimates. These will serve as a benchmark to compare against the propensity score estimates in Activity 2.",
     "crumbs": [
       "Activities",
       "Activity 1"
@@ -242,7 +242,7 @@
     "href": "activity-3.html",
     "title": "Activity 3",
     "section": "",
-    "text": "In Activity 3, we estimate standard errors for the IPT-weighted (ATE) and SMR-weighted (ATT) risk differences using three approaches: the robust sandwich variance, the bootstrap, and M-estimation.\nStandard error estimation for weighted estimators is non-trivial. The weights are themselves estimated quantities, and their uncertainty should be propagated through to the final estimate. The three methods handle this very differently.",
+    "text": "Prefer to work locally? Download the local version — a standard .qmd file with regular R chunks you can run in RStudio or with quarto render. You will also need data/tpa_ds.rds and R/metadata.R.\nIn Activity 3, we estimate standard errors for the IPT-weighted (ATE) and SMR-weighted (ATT) risk differences using three approaches: the robust sandwich variance, the bootstrap, and M-estimation.\nStandard error estimation for weighted estimators is non-trivial. The weights are themselves estimated quantities, and their uncertainty should be propagated through to the final estimate. The three methods handle this very differently.",
     "crumbs": [
       "Activities",
       "Activity 3"
