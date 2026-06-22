@@ -17,8 +17,8 @@ install.packages(c("dplyr", "ggplot2", "kableExtra", "broom",
 
 You also need two files from the workshop in your working directory:
 
-- `data/tpa_ds.rds` — the dataset
-- `R/metadata.R` — variable labels and factor levels
+- `tpa_ds.rds` — the dataset
+- `metadata.R` — variable labels and factor levels
 
 Download them from the workshop website and place them in your working directory before running this file.
 
@@ -42,8 +42,8 @@ library(geex)
 ```
 
 ```{r}
-source("R/metadata.R")
-tpa_ds <- readRDS("data/tpa_ds.rds")
+source("metadata.R")
+tpa_ds <- readRDS("tpa_ds.rds")
 
 tpa_ds$age_5f <- cut(tpa_ds$age, breaks = seq(14, 105, by = 5), right = FALSE)
 

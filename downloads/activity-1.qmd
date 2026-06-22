@@ -43,8 +43,8 @@ library(smd)
 # Read-in data
 
 ```{r}
-source("R/metadata.R")          # variable labels and factor levels
-tpa_ds <- readRDS("data/tpa_ds.rds")
+source("metadata.R")          # variable labels and factor levels
+tpa_ds <- readRDS("tpa_ds.rds")
 
 summary(tpa_ds)
 ```
