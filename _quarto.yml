@@ -6,11 +6,13 @@ project:
     - "*.qmd"
     - "!old_lab/**"
     - "!slides/**"
+    - "!slides.qmd"
     - "!downloads/**"
   resources:
     - R/metadata.R
     - data/tpa_ds.rds
     - downloads/
+    - slides.html
 
 website:
   title: "Modern uses of propensity scores"

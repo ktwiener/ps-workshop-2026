@@ -270,6 +270,84 @@ $$\hat{\omega}_{i,\text{SRR}} = \frac{I(A_i=1)\left[1-\hat{e}(\mathbf{L}_i)\righ
 
 ---
 
+# Bonus: ATO — Average Treatment Effect in the Overlap Population
+
+Overlap weights target the **population with clinical equipoise** — individuals for whom there was genuine uncertainty about which treatment they would receive. Each person is weighted by the probability of receiving the treatment they *did not* get:
+
+$$\hat{\omega}_{i,\text{OW}} = I(A_i=1)\left[1-\hat{e}(\mathbf{L}_i)\right] + I(A_i=0)\,\hat{e}(\mathbf{L}_i)$$
+
+Treated individuals with high propensity scores (very likely to be treated) receive *low* overlap weights — they contribute little to learning about the counterfactual because there are few similar untreated individuals to compare against. Untreated individuals with low propensity scores are similarly downweighted. The pseudo-population is concentrated in the region of propensity score overlap.
+
+**Key properties of overlap weights:**
+
+- **No positivity violations**: weights approach zero as $\hat{e} \to 0$ or $\hat{e} \to 1$ — extreme propensity scores are automatically handled
+- **Bounded weights**: $\hat{\omega} \in (0, 1)$ for all observations, so there is no extreme upweighting
+- **Exact balance**: covariate means are exactly balanced in the weighted sample for any propensity score model
+- **Minimum variance**: among all balancing weights, overlap weights yield the smallest asymptotic variance
+
+The tradeoff is that the target population is data-adaptive: the ATO is defined by the covariate distribution and propensity score, not a pre-specified clinical group.
+
+## Calculate overlap weights
+
+```{webr}
+tpa_ds_cc$ow <- with(tpa_ds_cc,
+  tpa * (1 - ps) + (1 - tpa) * ps
+)
+
+cat("Overlap weight summary (all):\n")
+summary(tpa_ds_cc$ow)
+
+cat("\nOverlap weights among treated:\n")
+summary(tpa_ds_cc$ow[tpa_ds_cc$tpa == 1])
+
+cat("\nOverlap weights among untreated:\n")
+summary(tpa_ds_cc$ow[tpa_ds_cc$tpa == 0])
+```
+
+Unlike the IPT weights (which had a maximum near 500+), overlap weights are bounded between 0 and 1. The observations that contribute most are those near $\hat{e} = 0.5$, where both treated and untreated individuals receive weight close to 0.5.
+
+## Balance after overlap weighting
+
+```{webr}
+design_ow <- survey::svydesign(id = ~1, weights = ~ow, data = tpa_ds_cc)
+
+t1_ow <- tableone::svyCreateTableOne(
+  data       = design_ow,
+  vars       = confounders,
+  strata     = "tpa_f",
+  factorVars = conf_cat,
+  smd        = TRUE,
+  test       = FALSE
+)
+
+kable(print(t1_ow, smd = TRUE, printToggle = FALSE, varLabels = TRUE))
+```
+
+## Marginal structural model: ATO
+
+```{webr}
+ato_rd_model <- lm(death ~ tpa, data = tpa_ds_cc, weights = ow)
+
+ato_rd <- ato_rd_model |>
+  broom::tidy(conf.int = TRUE) |>
+  dplyr::filter(term == "tpa") |>
+  dplyr::mutate(term = "ATO RD")
+
+ato_rr <- glm(death ~ tpa, data = tpa_ds_cc, weights = ow,
+              family = quasibinomial(link = "log")) |>
+  broom::tidy(conf.int = TRUE, exponentiate = TRUE) |>
+  dplyr::filter(term == "tpa") |>
+  dplyr::mutate(term = "ATO RR")
+
+bind_rows(ato_rd, ato_rr) |>
+  dplyr::select(term, estimate, conf.low, conf.high) |>
+  kable(digits = 3)
+```
+
+How does the ATO compare to the ATE and ATT? The overlap-weighted sample focuses on patients near $\hat{e} = 0.5$ — those for whom treatment assignment was most uncertain and who represent the clearest candidates for comparative effectiveness research. In datasets with substantial positivity violations (like this one), the ATE and ATO can differ meaningfully because they upweight very different subpopulations.
+
+---
+
 # Love plot: Balance across weighting methods
 
 A Love plot displays SMDs for all covariates across weighting methods side-by-side. The vertical reference line at 0.1 represents a commonly used threshold for acceptable balance.
@@ -299,7 +377,10 @@ smd_data <- dplyr::bind_rows(
     dplyr::mutate(weight = "IPT (ATE)"),
   tableone::ExtractSmd(t1_smr, varLabels = TRUE) |>
     tibble::as_tibble(rownames = "variable") |>
-    dplyr::mutate(weight = "SMR (ATT)")
+    dplyr::mutate(weight = "SMR (ATT)"),
+  tableone::ExtractSmd(t1_ow, varLabels = TRUE) |>
+    tibble::as_tibble(rownames = "variable") |>
+    dplyr::mutate(weight = "OW (ATO)")
 )
 
 ggplot(smd_data, aes(x = `1 vs 2`, y = variable, color = weight, shape = weight)) +
@@ -342,7 +423,8 @@ multi_res <- glm(as.formula(outform), data = tpa_ds_cc,
   dplyr::mutate(term = "Conditional RR (MV)")
 
 dplyr::bind_rows(crude_rd, crude_rr, multi_res,
-                 ate_rd, ate_rr, att_rd, att_rr, atu_rd, atu_rr) |>
+                 ate_rd, ate_rr, att_rd, att_rr, atu_rd, atu_rr,
+                 ato_rd, ato_rr) |>
   dplyr::transmute(
     Method   = if_else(term %in% c("Crude RD", "Crude RR", "Conditional RR (MV)"),
                        "Unadjusted / conditional", "Propensity score weighted"),
