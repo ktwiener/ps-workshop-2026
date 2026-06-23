@@ -187,6 +187,39 @@
     ]
   },
   {
+    "objectID": "activity-2.html#calculate-overlap-weights",
+    "href": "activity-2.html#calculate-overlap-weights",
+    "title": "Activity 2",
+    "section": "Calculate overlap weights",
+    "text": "Calculate overlap weights\n\n\n\n\n\n\nUnlike the IPT weights (which had a maximum near 500+), overlap weights are bounded between 0 and 1. The observations that contribute most are those near \\(\\hat{e} = 0.5\\), where both treated and untreated individuals receive weight close to 0.5.",
+    "crumbs": [
+      "Activities",
+      "Activity 2"
+    ]
+  },
+  {
+    "objectID": "activity-2.html#balance-after-overlap-weighting",
+    "href": "activity-2.html#balance-after-overlap-weighting",
+    "title": "Activity 2",
+    "section": "Balance after overlap weighting",
+    "text": "Balance after overlap weighting",
+    "crumbs": [
+      "Activities",
+      "Activity 2"
+    ]
+  },
+  {
+    "objectID": "activity-2.html#marginal-structural-model-ato",
+    "href": "activity-2.html#marginal-structural-model-ato",
+    "title": "Activity 2",
+    "section": "Marginal structural model: ATO",
+    "text": "Marginal structural model: ATO\n\n\n\n\n\n\nHow does the ATO compare to the ATE and ATT? The overlap-weighted sample focuses on patients near \\(\\hat{e} = 0.5\\) — those for whom treatment assignment was most uncertain and who represent the clearest candidates for comparative effectiveness research. In datasets with substantial positivity violations (like this one), the ATE and ATO can differ meaningfully because they upweight very different subpopulations.",
+    "crumbs": [
+      "Activities",
+      "Activity 2"
+    ]
+  },
+  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
@@ -328,7 +361,7 @@
     "href": "index.html#materials",
     "title": "Modern Uses of Propensity Scores",
     "section": "Materials",
-    "text": "Materials\nThe workshop materials require R and R Studio. Installation instructions here\nThe code can be run directly in the browser from this website. However, if you’d prefer downloading files and running locally (recommended!), download here:\n\nData\nMetadata helper\nActivity 1\nActivity 2\nActivity 3",
+    "text": "Materials\nThe workshop materials require R and R Studio. Installation instructions here\nThe code can be run directly in the browser from this website. However, if you’d prefer downloading files and running locally (recommended!), download here:\n\nSlides\nData\nMetadata helper\nActivity 1\nActivity 2\nActivity 3",
     "crumbs": [
       "Introduction"
     ]
